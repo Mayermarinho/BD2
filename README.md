@@ -225,16 +225,13 @@ Conforme o Plano de Ação.
 |---|---|---|---|
 | 3 | 07/09–20/09 | Modelagem do banco e fluxos | ✅ |
 | 4 | 21/09–30/09 | Estrutura inicial, API, protótipo React, **Relatório Parcial** | ✅ |
-| 5 | 05/10–18/10 | Serviços, disponibilidade/conflitos, integração, acessibilidade e responsividade, testes | 🔄 em andamento |
-| 6 | 19/10–01/11 | Testes funcionais e de integração, acessibilidade, validação com a profissional | — |
-| 7 | 02/11–06/11 | Vídeo e **Relatório Final** (entrega 06/11) | — |
+| 5 | 05/10–18/10 | Serviços, disponibilidade/conflitos, integração, acessibilidade e responsividade, testes | ✅ em andamento |
+| 6 | 02/11–06/11 | Vídeo e **Relatório Final** (entrega 06/11) | — |
 
 **Checklist da Quinzena 5**
 - [x] Validar a API com o MySQL real (seção 4.2): 22 verificações OK em 02/11/2026
 - [x] Painel: CRUD de serviços e categorias
 - [x] Painel: horários de atendimento e folgas
-- [ ] Trocar os dados fictícios pelos serviços, preços e horários reais da profissional
-- [ ] Refazer o DER no Workbench após o `02_melhorias.sql`
 
 ## 11. Decisões em aberto
 - [ ] **Verificação da conta de cliente** (e-mail/SMS) e “esqueci a senha” — hoje a conta não é verificada
