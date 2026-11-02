@@ -6,7 +6,7 @@
 
 | Dia | O que fazer |
 |---|---|
-| **Seg 02 a ter 03** | Rodar `npm run verificar` no MySQL real (seção 3) e anexar `resultado-verificacao.txt`. Refazer o Teste 3 do Parcial com print. |
+| **Seg 02 a ter 03** | ✅ `npm run verificar` no MySQL real: 22 OK (anexar `resultado-verificacao.txt`). Falta refazer o Teste 3 do Parcial com print. |
 | **Ter 03 a qua 04** | Repetir os testes funcionais (seção 6.1) e de integração (6.2) e registrar com prints. |
 | **Qua 04 a qui 05** | Gravar o vídeo (roteiro na seção 8.2, usando o `npm run demo` ou o banco real) e fechar o texto do Relatório Final. |
 | **Qui 05 a sex 06** | Revisão coletiva e **entrega em 06/11** (Samara). |
@@ -22,8 +22,10 @@ O que **não** entra agora e vai para "trabalhos futuros" no relatório: remarca
 site do cliente (home, agendar com ou sem conta, cancelar, conta de cliente), painel da profissional (dashboard,
 agenda, serviços, horários e folgas) e regra anti-conflito de horário.
 
-**O que ninguém ainda fez:** rodar tudo contra um **MySQL de verdade**. Os scripts `.sql` e o arquivo
-`backend/src/repos/mysql.js` nunca foram executados. É o maior risco do projeto e por isso é o **passo 1**.
+**Já verificado no MySQL real (02/11/2026):** `npm run verificar` passou nas **22 verificações**, incluindo
+concorrência (6 pedidos simultâneos, só 1 vence) e o trigger do banco. Os scripts `01` a `04` e o arquivo
+`backend/src/repos/mysql.js` funcionaram. **Ainda fora do roteiro automático:** o dashboard (`/api/admin/resumo`) e o
+CRUD de categorias: conferir na tela do painel.
 
 ## 2. Visão geral (linha do tempo)
 
@@ -231,6 +233,6 @@ Dica: ensaiar com o **modo demo**, que tem dados prontos e não depende do banco
 
 | Risco | Efeito | O que fazer |
 |---|---|---|
-| MySQL real revelar erros no `repos/mysql.js` | Atrasa tudo | Etapa A **agora**; mandar os erros logo |
+| MySQL real revelar erros no `repos/mysql.js` | Atrasa tudo | ✅ Resolvido: 22 verificações OK em 02/11/2026 |
 | Pouco tempo na Quinzena 7 | Relatório apressado | Ir escrevendo as seções do relatório durante a Quinzena 6 |
 | Endereço, telefone e Instagram ainda de exemplo | Dados falsos no vídeo | Trocar em `frontend/src/marca.js` antes de gravar |

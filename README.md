@@ -46,7 +46,7 @@ Sistema web para uma profissional autônoma da área da beleza (cenário inicial
 | Remarcar horário pela conta do cliente | ⏳ |
 | Painel: clientes e relatórios | ⏳ etapa 3 |
 
-> ⚠️ **Ainda não testado contra um MySQL real:** a camada `backend/src/repos/mysql.js` foi escrita e revisada, mas só foi executada com testes em memória. O primeiro passo no seu computador é a seção [4.2](#42-rodar-com-o-mysql-de-verdade).
+> ✅ **Verificado contra um MySQL real (02/11/2026):** `npm run verificar` passou nas **22 verificações** (agendar, conflito, concorrência com 6 pedidos simultâneos, trigger do banco, cancelar, folga e conta de cliente). Não cobre: dashboard (`/admin/resumo`) e CRUD de categorias. Veja a seção [4.2](#42-rodar-com-o-mysql-de-verdade).
 
 ## 2. Tecnologias
 
@@ -195,7 +195,7 @@ Base: `/api`. Detalhes e exemplos em [`backend/README.md`](backend/README.md).
 cd backend  && npm test    # horários livres + API pública e do painel (33 testes)
 cd frontend && npm test    # fluxo do cliente e do painel ligados à API (14 testes)
 ```
-Os testes não precisam de MySQL (usam o repositório em memória). A ligação com o MySQL real ainda precisa ser validada (ver seção 1).
+Os testes automatizados não precisam de MySQL (usam o repositório em memória). A ligação com o MySQL real foi verificada com `npm run verificar` (ver seção 1).
 
 `cd backend && npm run verificar` roda o roteiro de ponta a ponta **contra o MySQL real** (ver seção 4.2); `npm run verificar:demo` faz o mesmo em memória.
 
@@ -225,7 +225,7 @@ Conforme o Plano de Ação.
 | 7 | 02/11–06/11 | Vídeo e **Relatório Final** (entrega 06/11) | — |
 
 **Checklist da Quinzena 5**
-- [ ] Validar a API com o MySQL real (seção 4.2) e corrigir o que aparecer
+- [x] Validar a API com o MySQL real (seção 4.2): 22 verificações OK em 02/11/2026
 - [x] Painel: CRUD de serviços e categorias
 - [x] Painel: horários de atendimento e folgas
 - [ ] Trocar os dados fictícios pelos serviços, preços e horários reais da profissional
