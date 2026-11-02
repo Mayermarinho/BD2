@@ -26,6 +26,31 @@ git pull
    4. `04_conta_cliente.sql`
 3. Confira: `USE sistema_agendamento; SHOW TABLES;` deve listar as tabelas. Se algum script der erro em vermelho, **pare** e tire print.
 
+### Alternativa: usar o DBeaver no lugar do Workbench
+
+O sistema **não depende** do Workbench: a API só precisa do MySQL Server e da `DATABASE_URL`. O DBeaver é só outro programa para rodar os scripts e consultar o banco (o **MySQL Server continua sendo necessário**).
+
+1. **Nova conexão:** botão de tomada com "+" (ou *Banco de Dados > Nova Conexão*) > **MySQL** > Avançar.
+   - Host `localhost`, porta `3306`, usuário `root`, sua senha. **Deixe o campo "Database" vazio** (o script `01` cria o banco).
+   - Na primeira vez, o DBeaver oferece **baixar o driver do MySQL**: aceite (precisa de internet).
+   - Clique em **Testar Conexão** e depois em **Concluir**.
+   - Se aparecer `Public Key Retrieval is not allowed`: *Editar Conexão > Driver properties* e defina `allowPublicKeyRetrieval` = `true` (e `useSSL` = `false`).
+2. **Abrir o script:** *Arquivo > Abrir Arquivo...* e escolha `database\mysql\01_schema_original.sql`. Confira no topo do editor que a conexão ativa é a do MySQL.
+3. **Executar o script inteiro: Alt + X** (*Executar Script*). **Não use Ctrl + Enter**, que roda só um comando.
+4. Repita para `02`, `03` e `04`, **na mesma ordem** (o `01` e o `02` só uma vez).
+5. Atualize a lista da esquerda com **F5** sobre a conexão: o banco `sistema_agendamento` aparece.
+6. **Confira as triggers** (o `01` usa o comando `DELIMITER $$`, que o DBeaver costuma entender, mas não foi testado pelo agente):
+   ```
+   USE sistema_agendamento;
+   SHOW TRIGGERS;
+   ```
+   Devem aparecer **2 linhas**: `trg_impede_conflito_horario` e `trg_impede_conflito_horario_update`.
+   Se não aparecerem, selecione só o bloco do trigger (de `DELIMITER $$` até `DELIMITER ;`) e execute com Alt + X, ou rode o script pelo Workbench de outro integrante.
+7. Para testar o conflito (Teste 2 do Parcial), execute um `INSERT` de agendamento em horário já ocupado: o DBeaver mostra o erro `SQL Error [1644] [45000]: ERRO: Conflito de horário!...`. Tire print.
+8. **Diagrama (DER):** clique com o botão direito no banco `sistema_agendamento` > **Ver Diagrama** (*View Diagram*). Para salvar a imagem: botão direito no diagrama > *Save as image*. Se trocar a ferramenta, cite no relatório qual gerou o DER.
+
+O resto do passo a passo não muda (`.env`, `npm run verificar`, `iniciar.bat`).
+
 ## Parte 3. Ligar o sistema ao banco (`.env`)
 
 ```
