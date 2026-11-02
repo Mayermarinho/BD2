@@ -43,12 +43,8 @@ Sistema web para uma profissional autônoma da área da beleza (cenário inicial
 | Painel: cadastro de **serviços** e categorias (criar, editar, ativar/desativar, excluir) | ✅ |
 | Painel: **horários de atendimento** e folgas/feriados | ✅ |
 | **App instalável no celular (PWA)**: Android (botão “Instalar”) e iPhone (passo a passo); funciona em endereço https | ✅ código pronto — **precisa de site publicado para testar a instalação** |
-| App nativo (Play Store / App Store) | ⏳ melhoria futura (ver `docs/MOBILE.md`) |
 | Remarcar horário pela conta do cliente | ⏳ |
 | Painel: clientes e relatórios | ⏳ etapa 3 |
-| Lembretes por WhatsApp | ⏳ melhoria futura (hoje só um link `wa.me`) |
-| Publicação na nuvem | ⏳ |
-| Auditoria de acessibilidade e validação com a profissional | ⏳ Quinzenas 5–6 |
 
 > ⚠️ **Ainda não testado contra um MySQL real:** a camada `backend/src/repos/mysql.js` foi escrita e revisada, mas só foi executada com testes em memória. O primeiro passo no seu computador é a seção [4.2](#42-rodar-com-o-mysql-de-verdade).
 
