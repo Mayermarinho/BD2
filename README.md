@@ -37,7 +37,7 @@ Sistema web para uma profissional autônoma da área da beleza (cenário inicial
 | Site do cliente: cancelar horário sem conta (nº + telefone) | ✅ |
 | **Conta opcional de cliente**: cadastro, login, “Meus agendamentos” e cancelar sem digitar nº/telefone | ✅ |
 | Login único (cliente → Minha conta; profissional → painel) | ✅ |
-| Identidade visual editável em um arquivo (`frontend/src/marca.js`): paleta azul suave + rosa quartzo + ameixa, desenhos de fundo em linha fina (`frontend/src/desenhos.jsx`) — **nome, cores e fotos provisórios** (fotos ilustrativas geradas por IA em `frontend/public/img/`) | ✅ |
+| Identidade visual editável em um arquivo (`frontend/src/marca.js`): paleta azul suave + rosa quartzo + ameixa, desenhos de fundo em linha fina (`frontend/src/desenhos.jsx`) — **nome “Studio Aurora”, cores e logo definidos pelo grupo**; endereço/telefone/Instagram ainda são exemplos e as fotos são ilustrações geradas por IA em `frontend/public/img/` | ✅ |
 | Painel: login + **dashboard** (hoje, próximos 7 dias, pendentes, próximos atendimentos) | ✅ |
 | Painel: **agenda** por dia e por semana (confirmar, concluir, cancelar) | ✅ |
 | Painel: cadastro de **serviços** e categorias (criar, editar, ativar/desativar, excluir) | ✅ |
@@ -157,7 +157,7 @@ Roda 20 verificações no MySQL do `.env` (agendar, conflito, concorrência, tri
 
 A profissional entra pelo mesmo botão **Entrar** da página inicial e é levada ao painel.
 
-**Para trocar nome, cores e textos do site**, edite só `frontend/src/marca.js` (hoje: nome provisório “Studio Aurora”).
+**Para trocar nome, cores e textos do site**, edite só `frontend/src/marca.js` (nome definitivo: “Studio Aurora”; troque também endereço, telefone e Instagram, que ainda são exemplos).
 
 ### Regras de negócio
 - Horários livres = grade semanal da profissional − folgas/feriados − agendamentos não cancelados; nunca no passado; com antecedência mínima quando for hoje.

@@ -166,7 +166,7 @@ Marque a decisão e me avise para eu ajustar o sistema e a documentação. A col
 | "Pagamentos" (citado no Parcial) | só registrar valor, ou criar tabela própria | Só registrar valor (`preco_cobrado`) e explicar no relatório |
 | Banco de dados | Plano diz PostgreSQL, sistema usa MySQL | **Manter MySQL** e registrar a mudança e o motivo no Relatório Final |
 | Verificação de e-mail/telefone e "esqueci a senha" | não existem hoje | Deixar como melhoria futura |
-| Nome, logo e cores definitivos | provisório "Studio Aurora" | Pedir o nome do salão à profissional |
+| Nome, logo e cores definitivos | ✅ **Decidido:** "Studio Aurora", logo (tesoura + brilho) e paleta atual | Falta só trocar endereço, telefone e Instagram em `marca.js` |
 
 ---
 
@@ -282,4 +282,4 @@ Dica: ensaiar com o **modo demo**, que tem dados prontos e não depende do banco
 | Profissional pedir mudanças tarde | Retrabalho na reta final | Mostrar o sistema a ela **já nesta quinzena** (modo demo) |
 | Pouco tempo na Quinzena 7 | Relatório apressado | Ir escrevendo as seções do relatório durante a Quinzena 6 |
 | Visual de celular só testado em simulador | Surpresas na validação | Testar em celular real na Etapa C |
-| Nome/fotos provisórios no vídeo | Aparência amadora | Definir nome e fotos até 28/10 |
+| Endereço, telefone e Instagram ainda de exemplo | Dados falsos no vídeo | Trocar em `frontend/src/marca.js` antes de gravar |

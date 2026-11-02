@@ -1,10 +1,12 @@
 // ============================================================================
 // IDENTIDADE DO SITE — edite este arquivo para trocar nome, cores e textos.
-// Não precisa mexer em mais nenhum código. Os valores abaixo são PROVISÓRIOS:
-// o grupo e a profissional devem trocá-los pelos reais.
+// Não precisa mexer em mais nenhum código.
+// DEFINITIVOS (decisão do grupo): nome "Studio Aurora", paleta de cores e logo (tesoura + brilho).
+// AINDA PLACEHOLDER: endereço, telefone/WhatsApp e Instagram em "contato" (abaixo): troque pelos reais.
+// As fotos de public/img são ilustrações geradas por IA (troque por fotos reais do salão, se houver).
 // ============================================================================
 export const marca = {
-  nome: 'Studio Aurora',                         // PROVISÓRIO — nome do salão
+  nome: 'Studio Aurora',                         // definitivo — nome do salão
   slogan: 'Cabelo & Estética',
   titulo: 'Beleza com calma, no seu tempo.',
   subtitulo: 'Escolha o serviço, veja os horários livres e agende em poucos cliques — pelo celular ou computador, sem precisar ligar.',
@@ -50,7 +52,7 @@ export const marca = {
     { icone: 'check', titulo: 'Pronto!', texto: 'Com conta, você acompanha e cancela quando quiser. Sem conta, também dá.' },
   ],
 
-  // PROVISÓRIOS — troque pelos dados reais da profissional
+  // PLACEHOLDER — troque pelos dados reais da profissional (aparecem no site)
   contato: {
     endereco: 'Rua Exemplo, 123 — Centro',
     cidade: 'Andradina – SP',
