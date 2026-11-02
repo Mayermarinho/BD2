@@ -43,10 +43,11 @@ Sistema web para uma profissional autônoma da área da beleza (cenário inicial
 | Painel: cadastro de **serviços** e categorias (criar, editar, ativar/desativar, excluir) | ✅ |
 | Painel: **horários de atendimento** e folgas/feriados | ✅ |
 | **App instalável no celular (PWA)**: Android (botão “Instalar”) e iPhone (passo a passo); funciona em endereço https | ✅ código pronto — **precisa de site publicado para testar a instalação** |
-| Remarcar horário pela conta do cliente | ⏳ |
-| Painel: clientes e relatórios | ⏳ etapa 3 |
+| **Remarcar horário** pela conta do cliente (mesmo serviço; o horário atual não bloqueia a si mesmo; mesma trava anti-conflito) | ✅ testado em memória — falta rodar `npm run verificar` no MySQL |
+| Painel: **clientes** (busca, conta/sem conta, histórico, total concluído) | ✅ testado em memória — falta verificar no MySQL |
+| Painel: **relatórios** (período, realizado × previsto, cancelamentos, por serviço, por dia, melhores clientes, CSV) | ✅ testado em memória — falta verificar no MySQL |
 
-> ✅ **Verificado contra um MySQL real (02/11/2026):** `npm run verificar` passou nas **22 verificações** (agendar, conflito, concorrência com 6 pedidos simultâneos, trigger do banco, cancelar, folga e conta de cliente). Não cobre: dashboard (`/admin/resumo`) e CRUD de categorias. Veja a seção [4.2](#42-rodar-com-o-mysql-de-verdade).
+> ✅ **Verificado contra um MySQL real (02/11/2026):** `npm run verificar` passou nas **22 verificações da época** (os passos novos de remarcar, clientes e relatórios ainda precisam ser rodados no MySQL; o script agora tem 26) (agendar, conflito, concorrência com 6 pedidos simultâneos, trigger do banco, cancelar, folga e conta de cliente). Não cobre: dashboard (`/admin/resumo`) e CRUD de categorias. Veja a seção [4.2](#42-rodar-com-o-mysql-de-verdade).
 
 ## 2. Tecnologias
 
@@ -182,9 +183,12 @@ Base: `/api`. Detalhes e exemplos em [`backend/README.md`](backend/README.md).
 | `POST /auth/login` | público | devolve token JWT |
 | `POST /clientes/cadastro` | público | cria conta de cliente e já devolve o token |
 | `GET /cliente/perfil`, `GET /cliente/agendamentos`, `POST /cliente/agendamentos/:id/cancelar` | cliente | área “Minha conta” |
+| `GET /cliente/agendamentos/:id/disponibilidade?data=`, `POST /cliente/agendamentos/:id/remarcar` | cliente | remarcar: só o horário (serviço igual); recusa passado, ocupado, folga e agendamento já iniciado/cancelado |
 | `GET /admin/agenda?inicio=&fim=` | profissional | agenda do período |
 | `PATCH /admin/agendamentos/:id` | profissional | confirmar, concluir ou cancelar |
 | `GET /admin/resumo` | profissional | dados do dashboard |
+| `GET /admin/clientes?busca=`, `GET /admin/clientes/:id` | profissional | clientes que já agendaram (nome, telefone, e-mail, com/sem conta, totais) e histórico |
+| `GET /admin/relatorios?inicio=&fim=` | profissional | totais, por serviço, por dia e melhores clientes (máx. 366 dias) |
 | `GET/POST /admin/servicos`, `PUT/DELETE /admin/servicos/:id` | profissional | serviços (inclui inativos). Com agendamentos, só desativa (409 ao excluir) |
 | `GET/POST /admin/categorias`, `PUT/DELETE /admin/categorias/:id` | profissional | categorias (nome único) |
 | `GET/POST /admin/horarios`, `DELETE /admin/horarios/:id` | profissional | janelas de atendimento (`dia_semana` 0=domingo…6=sábado); recusa sobreposição |
@@ -192,8 +196,8 @@ Base: `/api`. Detalhes e exemplos em [`backend/README.md`](backend/README.md).
 
 ## 7. Testes
 ```bash
-cd backend  && npm test    # horários livres + API pública e do painel (33 testes)
-cd frontend && npm test    # fluxo do cliente e do painel ligados à API (14 testes)
+cd backend  && npm test    # horários livres + API pública e do painel (44 testes)
+cd frontend && npm test    # fluxo do cliente e do painel ligados à API (20 testes)
 ```
 Os testes automatizados não precisam de MySQL (usam o repositório em memória). A ligação com o MySQL real foi verificada com `npm run verificar` (ver seção 1).
 

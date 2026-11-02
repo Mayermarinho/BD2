@@ -55,3 +55,24 @@ export function inicioDaSemana(data) {
 }
 
 export const dataMuitoCurta = (data) => data.split('-').reverse().slice(0, 2).join('/');
+
+/** Primeiro e último dia do mês de `data` ("AAAA-MM-DD") e do mês anterior. */
+export const primeiroDiaDoMes = (data) => `${data.slice(0, 7)}-01`;
+export function ultimoDiaDoMes(data) {
+  const [a, m] = data.split('-').map(Number);
+  return new Date(Date.UTC(a, m, 0)).toISOString().slice(0, 10); // dia 0 do mês seguinte
+}
+export const mesAnterior = (data) => primeiroDiaDoMes(somarDias(primeiroDiaDoMes(data), -1));
+
+/**
+ * CSV para o Excel brasileiro (separador ";" e BOM). Textos que começam com = + - @ ganham um apóstrofo
+ * para o Excel não executar como fórmula (nomes vêm de formulário público).
+ */
+export function gerarCsv(linhas) {
+  const celula = (v) => {
+    let t = String(v ?? '');
+    if (/^[=+\-@\t\r]/.test(t)) t = `'${t}`;
+    return /[";\n\r]/.test(t) ? `"${t.replace(/"/g, '""')}"` : t;
+  };
+  return `\uFEFF${linhas.map((l) => l.map(celula).join(';')).join('\r\n')}`;
+}

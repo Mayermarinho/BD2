@@ -5,8 +5,10 @@ import { InstalarApp } from './instalar.jsx';
 import { marca } from './marca.js';
 import AdminLayout from './pages/admin/AdminLayout.jsx';
 import Agenda from './pages/admin/Agenda.jsx';
+import Clientes from './pages/admin/Clientes.jsx';
 import Dashboard from './pages/admin/Dashboard.jsx';
 import Horarios from './pages/admin/Horarios.jsx';
+import Relatorios from './pages/admin/Relatorios.jsx';
 import Servicos from './pages/admin/Servicos.jsx';
 import Agendar from './pages/Agendar.jsx';
 import Cadastro from './pages/Cadastro.jsx';
@@ -82,6 +84,8 @@ export default function App() {
             <Route path="agenda" element={<Agenda />} />
             <Route path="servicos" element={<Servicos />} />
             <Route path="horarios" element={<Horarios />} />
+            <Route path="clientes" element={<Clientes />} />
+            <Route path="relatorios" element={<Relatorios />} />
           </Route>
           <Route path="*" element={<p>Página não encontrada. <Link to="/">Voltar ao início</Link></p>} />
         </Routes>

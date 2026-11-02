@@ -349,11 +349,16 @@ POST   /api/agendamentos/:id/cancelar         # público/admin – cancela com m
 
 POST   /api/auth/login                        # admin
 GET    /api/admin/agenda?inicio=&fim=         # admin
-PATCH  /api/admin/agendamentos/:id            # admin – status/remarcar
+PATCH  /api/admin/agendamentos/:id            # admin – status (confirmar, concluir, cancelar)
 GET    /api/admin/resumo                       # admin – dashboard
 *      /api/admin/servicos | categorias        # admin – CRUD (excluir serviço com agendamento → 409)
 *      /api/admin/horarios | bloqueios         # admin – janelas de atendimento e folgas
-# a fazer: /api/admin/clientes, relatórios e conta de cliente (etapas 2 e 3)
+GET    /api/admin/clientes | clientes/:id      # admin – clientes e histórico
+GET    /api/admin/relatorios?inicio=&fim=      # admin – relatório do período
+POST   /api/clientes/cadastro                  # público – conta de cliente
+GET    /api/cliente/agendamentos               # cliente – meus agendamentos
+GET    /api/cliente/agendamentos/:id/disponibilidade?data=   # cliente – horários para remarcar
+POST   /api/cliente/agendamentos/:id/remarcar  # cliente – remarcar (mesmo serviço)
 ```
 
 ### Estrutura de pastas

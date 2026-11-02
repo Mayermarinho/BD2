@@ -69,5 +69,5 @@ Transições permitidas: `PENDENTE → CONFIRMADO/CANCELADO`, `CONFIRMADO → CO
 ## Arquitetura e verificação
 - `src/repos/mysql.js`: **toda** a SQL do sistema (MySQL). `src/repos/memoria.js`: mesma interface, em memória (testes e modo demo).
 - Regras (`src/disponibilidade.js`, `src/slots.js`, rotas) não dependem do banco.
-- `npm test`: 33 testes — cálculo de horários e a API via HTTP (disponibilidade, criação, conflitos, 5 requisições simultâneas, cancelamento, login, agenda, mudança de status).
+- `npm test`: 44 testes — cálculo de horários e a API via HTTP (disponibilidade, criação, conflitos, requisições simultâneas, cancelamento, login, agenda, status, conta de cliente, remarcar, clientes e relatórios).
 - ✅ **`repos/mysql.js` verificado contra um MySQL real** (02/11/2026): `npm run verificar` passou nas 22 verificações. Ficaram fora do roteiro automático o dashboard (`/api/admin/resumo`) e o CRUD de categorias: confira pela tela do painel.

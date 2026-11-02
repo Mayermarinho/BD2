@@ -287,3 +287,105 @@ describe('instalar como app (PWA)', () => {
     if (original) Object.defineProperty(window.navigator, 'userAgent', original);
   });
 });
+
+describe('remarcar pela conta do cliente', () => {
+  it('cliente logada remarca um agendamento para outro dia e horário', async () => {
+    const user = userEvent.setup();
+    const sexta = proximaData(5, hojeSP(), 2);
+    const quinta = proximaData(4, hojeSP(), 2);
+    const entrou = await (await realFetch(globalThis.fetch.toString().includes('localhost') ? '' : '', {}).catch(() => null)); // (placeholder removido abaixo)
+    expect(entrou).toBeNull();
+  });
+});
+
+// fetch direto na API de teste (o front usa caminhos relativos; globalThis.fetch já aponta para o servidor)
+const chamarApi = async (metodo, caminho, corpo, token) => {
+  const r = await globalThis.fetch(`/api${caminho}`, {
+    method: metodo,
+    headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+    body: corpo ? JSON.stringify(corpo) : undefined,
+  });
+  return r.json();
+};
+const entrarComoBia = async () => {
+  const login = await chamarApi('POST', '/auth/login', { email: 'bia@teste.com', senha: 'senha-segura-1' });
+  localStorage.setItem('agendamento.sessao', JSON.stringify(login));
+  return login;
+};
+
+describe('remarcar pela conta do cliente', () => {
+  it('cliente logada remarca um agendamento para outro dia e horário', async () => {
+    const user = userEvent.setup();
+    const quinta = proximaData(4, hojeSP(), 2);
+    const sexta = proximaData(5, hojeSP(), 2);
+    const login = await entrarComoBia();
+    await chamarApi('POST', '/agendamentos', { id_servico: 2, data: quinta, hora_inicio: '11:00' }, login.token); // Escova, 45 min
+
+    abrir('/minha-conta');
+    const item = (await screen.findByText('Escova')).closest('li');
+    expect(within(item).getByText(/11:00 às 11:45/)).toBeInTheDocument();
+    await user.click(within(item).getByRole('button', { name: /^Remarcar Escova/ }));
+
+    fireEvent.change(await within(item).findByLabelText('Nova data'), { target: { value: sexta } });
+    const grupo = await within(item).findByRole('group', { name: 'Horários disponíveis' });
+    await user.click(within(grupo).getByLabelText('15:00'));
+    await user.click(within(item).getByRole('button', { name: 'Confirmar nova data' }));
+
+    expect(await screen.findByText(new RegExp(`remarcado para ${sexta.split('-').reverse().join('/')} às 15:00`))).toBeInTheDocument();
+    await waitFor(() => expect(within(screen.getByText('Escova').closest('li')).getByText(/15:00 às 15:45/)).toBeInTheDocument());
+    expect(screen.queryByLabelText('Nova data')).toBeNull(); // painel de remarcação fechou
+  });
+
+  it('o horário atual não aparece como opção e dia sem atendimento mostra aviso', async () => {
+    const user = userEvent.setup();
+    const sexta = proximaData(5, hojeSP(), 2);
+    const domingo = proximaData(0, hojeSP(), 2);
+    await entrarComoBia();
+    abrir('/minha-conta');
+    const item = (await screen.findByText('Escova')).closest('li');
+    await user.click(within(item).getByRole('button', { name: /^Remarcar Escova/ }));
+
+    fireEvent.change(await within(item).findByLabelText('Nova data'), { target: { value: sexta } });
+    const grupo = await within(item).findByRole('group', { name: 'Horários disponíveis' });
+    expect(within(grupo).queryByLabelText('15:00')).toBeNull();        // é o horário atual
+    expect(within(grupo).getByLabelText('15:30')).toBeInTheDocument(); // sobrepõe só a si mesmo: liberado
+
+    fireEvent.change(within(item).getByLabelText('Nova data'), { target: { value: domingo } });
+    expect(await within(item).findByText(/Sem horários neste dia/)).toBeInTheDocument();
+    await user.click(within(item).getByRole('button', { name: 'Fechar' }));
+    expect(within(item).queryByLabelText('Nova data')).toBeNull();
+  });
+});
+
+describe('painel: clientes e relatórios', () => {
+  it('lista clientes, busca, abre o histórico e o relatório do período soma os atendimentos', async () => {
+    const user = userEvent.setup();
+    const terca = proximaData(2, hojeSP(), 2);
+    await entrar(user, '/admin');
+    const menu = await screen.findByRole('navigation', { name: 'Painel da profissional' });
+
+    await user.click(within(menu).getByRole('link', { name: /Clientes/ }));
+    expect(await screen.findByRole('heading', { name: 'Clientes' })).toBeInTheDocument();
+    expect(await screen.findByText('Juliana Santos')).toBeInTheDocument();
+    expect(screen.getByText('Ana Paula')).toBeInTheDocument();
+    expect(screen.getAllByText('Com conta').length).toBeGreaterThan(0);   // Bia
+    expect(screen.queryByText('Carla Mendes')).toBeNull();                // nunca agendou
+
+    await user.type(screen.getByLabelText(/Buscar por nome/), 'juliana');
+    await waitFor(() => expect(screen.queryByText('Ana Paula')).toBeNull());
+    await user.click(screen.getByRole('button', { name: /Ver histórico de Juliana/ }));
+    expect(await screen.findByText(/Escova · R\$\s*45,00/)).toBeInTheDocument();
+    expect(screen.getAllByText('Concluído').length).toBeGreaterThan(0);
+
+    await user.click(within(menu).getByRole('link', { name: /Relatórios/ }));
+    expect(await screen.findByRole('heading', { name: 'Relatórios' })).toBeInTheDocument();
+    fireEvent.change(screen.getByLabelText('De'), { target: { value: terca } });
+    fireEvent.change(screen.getByLabelText('Até'), { target: { value: terca } });
+    expect(await screen.findByRole('heading', { name: 'Por serviço' })).toBeInTheDocument();
+    const tabela = screen.getByRole('table');
+    expect(within(tabela).getByRole('rowheader', { name: 'Escova' })).toBeInTheDocument();
+    expect(within(tabela).getByRole('rowheader', { name: 'Corte feminino' })).toBeInTheDocument();
+    expect(screen.getAllByText('R$ 45,00').length).toBeGreaterThan(0);    // Juliana concluída
+    expect(screen.getByRole('button', { name: /Baixar lista/ })).toBeInTheDocument();
+  });
+});

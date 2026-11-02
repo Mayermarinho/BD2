@@ -6,23 +6,23 @@
 
 | Dia | O que fazer |
 |---|---|
-| **Seg 02 a ter 03** | ✅ `npm run verificar` no MySQL real: 22 OK (anexar `resultado-verificacao.txt`). Falta refazer o Teste 3 do Parcial com print. |
+| **Seg 02 a ter 03** | ✅ `npm run verificar` no MySQL real: 22 OK. **Rodar de novo** (agora 26 passos, com remarcar, clientes e relatórios) e anexar `resultado-verificacao.txt`. Falta refazer o Teste 3 do Parcial com print. |
 | **Ter 03 a qua 04** | Repetir os testes funcionais (seção 6.1) e de integração (6.2) e registrar com prints. |
 | **Qua 04 a qui 05** | Gravar o vídeo (roteiro na seção 8.2, usando o `npm run demo` ou o banco real) e fechar o texto do Relatório Final. |
 | **Qui 05 a sex 06** | Revisão coletiva e **entrega em 06/11** (Samara). |
 
-O que **não** entra agora e vai para "trabalhos futuros" no relatório: remarcar horário e clientes/relatórios no painel.
+Prontos (02/11): **remarcar pela conta do cliente**, **clientes** e **relatórios** no painel. Ficam como "trabalhos futuros": remarcar pelo painel da profissional e observações por cliente.
  Datas e responsáveis seguem o
 > [Plano de Ação](../PLANO%20DE%20A%C3%87%C3%83O%20GRUPO%204.pdf). Onde o Plano não diz quem faz algo novo, está
 > marcado como **sugestão**: o grupo decide.
 
 ## 1. Onde estamos
 
-**Pronto e testado só com dados em memória** (backend 33 testes, frontend 13 testes):
+**Pronto e testado só com dados em memória** (backend 44 testes, frontend 20 testes):
 site do cliente (home, agendar com ou sem conta, cancelar, conta de cliente), painel da profissional (dashboard,
 agenda, serviços, horários e folgas) e regra anti-conflito de horário.
 
-**Já verificado no MySQL real (02/11/2026):** `npm run verificar` passou nas **22 verificações**, incluindo
+**Já verificado no MySQL real (02/11/2026):** `npm run verificar` passou nas **22 verificações** (antes de remarcar, clientes e relatórios; o script atual tem **26** e precisa ser rodado de novo), incluindo
 concorrência (6 pedidos simultâneos, só 1 vence) e o trigger do banco. Os scripts `01` a `04` e o arquivo
 `backend/src/repos/mysql.js` funcionaram. **Ainda fora do roteiro automático:** o dashboard (`/api/admin/resumo`) e o
 CRUD de categorias: conferir na tela do painel.
@@ -142,12 +142,12 @@ Em ordem de prioridade (as duas primeiras são as que mais pesam para a profissi
 
 | Prioridade | Item | O que inclui | Estado |
 |---|---|---|---|
-| 1 | **Remarcar horário** | Cliente (com conta) e profissional trocam data/hora de um agendamento, respeitando conflitos | ⏳ a construir |
-| 2 | **Painel: clientes** | Lista com busca por nome/telefone, histórico de cada cliente, observações | ⏳ a construir |
-| 3 | **Painel: relatórios** | Agendamentos por período, serviços mais pedidos, cancelamentos e faturamento estimado (usa `preco_cobrado`) | ⏳ a construir |
+| 1 | **Remarcar horário** | Pela conta do cliente: mesmo serviço, novo dia/horário, respeitando conflitos. (Pelo painel da profissional: trabalho futuro.) | ✅ feito (falta `npm run verificar` no MySQL) |
+| 2 | **Painel: clientes** | Lista com busca por nome/telefone/e-mail, com/sem conta e histórico de cada cliente | ✅ feito (observações: futuro) |
+| 3 | **Painel: relatórios** | Período, realizado × previsto (`preco_cobrado`), cancelamentos, por serviço, por dia, melhores clientes e CSV | ✅ feito |
 | 4 | **Atualizar o `react-router-dom`** | O `npm audit` aponta 2 avisos moderados nessa biblioteca; atualizar e rodar os testes | ⏳ recomendado |
 
-> Eu (Arena) implemento 1, 2, 3 e 4 em etapas, com testes a cada uma. Para começar, diga **"pode começar a Etapa 3"**
+> Itens 1, 2 e 3 implementados; o 4 continua opcional, com testes a cada uma. Para começar, diga **"pode começar a Etapa 3"**
 > e eu faço na ordem acima. Se a profissional preferir outra ordem, avise.
 
 ---
@@ -205,8 +205,8 @@ Reaproveitar o `docs/REVISAO_RELATORIO_PARCIAL.md`, que lista o que corrigir em 
 - "Pagamentos": explicar que só se registra o valor cobrado.
 - A estatística de "80% dos conflitos" precisa de fonte ou deve ser reformulada.
 - A prevenção de conflito tem dois níveis (trigger + trava na API); explicar o limite do trigger sozinho.
-- Resultados: testes automatizados (33 + 14), roteiro do MySQL (seção 3.3), prints.
-- Limitações e trabalhos futuros: verificação de e-mail, pagamento online, remarcação (se não ficar pronta).
+- Resultados: testes automatizados (44 + 20), roteiro do MySQL (seção 3.3), prints.
+- Limitações e trabalhos futuros: verificação de e-mail, pagamento online, remarcar pelo painel da profissional.
 - Referências e formatação conforme modelo da UNIVESP/ABNT.
 
 ### 7.2 Vídeo (roteiro: Amanda e Marcela)

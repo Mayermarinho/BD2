@@ -76,6 +76,8 @@ export default function Dashboard() {
         <div className="acoes acoes--linha">
           <Link className="btn" to="/admin/servicos">Gerenciar serviços</Link>
           <Link className="btn" to="/admin/horarios">Horários e folgas</Link>
+          <Link className="btn" to="/admin/clientes">Clientes</Link>
+          <Link className="btn" to="/admin/relatorios">Relatórios</Link>
           <Link className="btn" to="/" target="_blank" rel="noreferrer">Ver página do cliente</Link>
         </div>
       </section>

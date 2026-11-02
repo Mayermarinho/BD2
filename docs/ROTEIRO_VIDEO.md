@@ -62,12 +62,19 @@
 > agendamentos sobrepostos."
 
 **Parte C, o painel (≈ 1 min).**
-[Entre em `/entrar` com o login da profissional (senha oculta) → **Resumo** → **Agenda** (aparece o agendamento) → **Confirmar/Concluir** → **Serviços** (edite um preço) → **Horários e folgas** (crie uma folga no dia).]
+[Entre em `/entrar` com o login da profissional (senha oculta) → **Resumo** → **Agenda** (aparece o agendamento) → **Confirmar/Concluir** → **Clientes** (busque e abra o histórico) → **Relatórios** (mês atual) → **Serviços** (edite um preço) → **Horários e folgas** (crie uma folga no dia).]
 
 > "Agora, a visão da profissional. Depois do login, ela vê o resumo do dia e a agenda com o agendamento que acabou de
 > chegar. Pode confirmar, concluir ou cancelar. Em Serviços, ela cadastra e edita nomes, preços e durações. Em Horários,
 > define os dias e horas de atendimento e marca folgas e feriados. Quando ela cria uma folga, esse dia deixa de
-> aparecer para os clientes."
+> aparecer para os clientes. Em Clientes, ela encontra cada pessoa e vê o histórico; em Relatórios, acompanha
+> quantos atendimentos, quanto faturou e quais serviços mais saem."
+
+**Parte D, remarcar pela conta do cliente (≈ 30 s, opcional; se o tempo apertar, corte a Parte C de Serviços).**
+[Entre como cliente (conta criada antes) → **Minha conta** → **Remarcar** no agendamento → nova data e horário → **Confirmar nova data** → mensagem de sucesso.]
+
+> "Quem tem conta também pode remarcar sozinho: escolhe outro dia e horário livre do mesmo serviço, e o sistema
+> só aceita se não houver conflito."
 
 ## Cena 5 · No celular (4:00–5:00) · Nicolas
 **Tela:** gravação de tela do celular. [Abra o endereço (túnel HTTPS) no Chrome → menu → **Instalar app / Adicionar à tela inicial** → abra pelo ícone → agende → mostre no PC o agendamento aparecendo na agenda.]
@@ -80,11 +87,11 @@
 prometa o que não aparece.)*
 
 ## Cena 6 · Banco de dados e testes (5:00–5:45) · Samara
-**Tela:** DBeaver com `SELECT * FROM agendamento` (a linha criada pelo site) → terminal com o fim do `npm run verificar`: `TUDO CERTO: 22 verificações OK`.
+**Tela:** DBeaver com `SELECT * FROM agendamento` (a linha criada pelo site) → terminal com o fim do `npm run verificar`: `TUDO CERTO` (confira o número no seu resultado: o roteiro atual tem 26 verificações).
 
-> "Aqui, no banco, está o agendamento que acabamos de criar pelo site. Para garantir a qualidade, temos 33 testes
-> automatizados na API e 14 na interface. Além disso, rodamos uma verificação ponta a ponta contra o MySQL de verdade,
-> com 22 passos: login, cadastro de serviços, agendamento, conflito de horário, cancelamento e conta de cliente.
+> "Aqui, no banco, está o agendamento que acabamos de criar pelo site. Para garantir a qualidade, temos 44 testes
+> automatizados na API e 20 na interface. Além disso, rodamos uma verificação ponta a ponta contra o MySQL de verdade,
+> com 26 passos: login, cadastro de serviços, agendamento, conflito de horário, cancelamento, conta de cliente, remarcar, clientes e relatórios.
 > Inclusive, 6 pedidos simultâneos para o mesmo horário resultaram em exatamente um agendamento."
 
 ## Cena 7 · Resultados, limitações e próximos passos (5:45–6:30) · Amanda e Marcela

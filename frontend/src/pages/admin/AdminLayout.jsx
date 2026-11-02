@@ -5,6 +5,8 @@ const ITENS = [
   { para: '/admin/agenda', rotulo: 'Agenda', icone: '📅' },
   { para: '/admin/servicos', rotulo: 'Serviços', icone: '✂️' },
   { para: '/admin/horarios', rotulo: 'Horários e folgas', icone: '🕘' },
+  { para: '/admin/clientes', rotulo: 'Clientes', icone: '👥' },
+  { para: '/admin/relatorios', rotulo: 'Relatórios', icone: '📊' },
 ];
 
 export default function AdminLayout() {

@@ -32,12 +32,17 @@ export const api = {
   cliente: (token) => ({
     agendamentos: () => req('/cliente/agendamentos', { token }),
     cancelar: (id, motivo) => req(`/cliente/agendamentos/${id}/cancelar`, { method: 'POST', corpo: { motivo }, token }),
+    horariosParaRemarcar: (id, data) => req(`/cliente/agendamentos/${id}/disponibilidade?data=${data}`, { token }),
+    remarcar: (id, data, hora_inicio) => req(`/cliente/agendamentos/${id}/remarcar`, { method: 'POST', corpo: { data, hora_inicio }, token }),
   }),
   cancelar: (id, telefone, motivo) => req(`/agendamentos/${id}/cancelar`, { method: 'POST', corpo: { telefone, motivo } }),
   login: (email, senha) => req('/auth/login', { method: 'POST', corpo: { email, senha } }),
   agenda: (token, inicio, fim) => req(`/admin/agenda?inicio=${inicio}&fim=${fim}`, { token }),
   admin: (token) => ({
     resumo: () => req('/admin/resumo', { token }),
+    clientes: (busca = '') => req(`/admin/clientes?busca=${encodeURIComponent(busca)}`, { token }),
+    cliente: (id) => req(`/admin/clientes/${id}`, { token }),
+    relatorio: (inicio, fim) => req(`/admin/relatorios?inicio=${inicio}&fim=${fim}`, { token }),
     agenda: (inicio, fim) => req(`/admin/agenda?inicio=${inicio}&fim=${fim}`, { token }),
     mudarStatus: (id, status, motivo) => req(`/admin/agendamentos/${id}`, { method: 'PATCH', corpo: { status, motivo_cancelamento: motivo }, token }),
     servicos: () => req('/admin/servicos', { token }),

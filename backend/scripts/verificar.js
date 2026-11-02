@@ -4,7 +4,7 @@
 //   npm run verificar:demo    -> usa dados em memória (não precisa de banco)
 //
 // Sobe a API dentro do próprio script, executa o roteiro (serviço, horários, agendamento, conflito,
-// concorrência, trigger, cancelamento, folga, conta de cliente) e mostra OK / FALHOU em cada passo.
+// concorrência, trigger, cancelamento, folga, conta de cliente, remarcar, clientes e relatórios) e mostra OK / FALHOU em cada passo.
 // O resultado também é salvo em backend/resultado-verificacao.txt (sem senhas), para anexar ao relatório.
 //
 // No MySQL ele grava dados de teste marcados com "[TESTE]". Ao final cancela os agendamentos e desativa o
@@ -267,6 +267,48 @@ await passo('Conta de cliente: login, agendar logada, listar e cancelar', async 
   const [c] = await j('POST', `/cliente/agendamentos/${ag?.id_agendamento}/cancelar`, {}, tk);
   const [adm] = await j('GET', '/admin/servicos', null, tk); // token de cliente não acessa o painel
   return confere(l === 200 && s === 201 && achou && c === 200 && (adm === 401 || adm === 403), `login ${l}, agendar ${s}, lista ${achou}, cancelar ${c}, painel com token de cliente ${adm}`);
+});
+
+let remarcado = null; // agendamento da conta de teste usado nos passos de remarcar
+await passo('Remarcar pela conta do cliente: o próprio horário não bloqueia e o novo fica ocupado', async () => {
+  const [, b] = await j('POST', '/auth/login', { email, senha: 'senha-de-teste-123' }, null);
+  const tk = b?.token;
+  const [s0, ag] = await j('POST', '/agendamentos', { id_servico: dados.idServico, data: quarta, hora_inicio: A() }, tk);
+  if (ag?.id_agendamento) dados.ag.push(ag.id_agendamento);
+  const [sd, d] = await j('GET', `/cliente/agendamentos/${ag?.id_agendamento}/disponibilidade?data=${quarta}`, null, tk);
+  const novaHora = somarMinutos(A(), 30); // sobrepõe ao próprio agendamento: só aparece se ele for desconsiderado
+  const [sr, r] = await j('POST', `/cliente/agendamentos/${ag?.id_agendamento}/remarcar`, { data: quarta, hora_inicio: novaHora }, tk);
+  const [, minhas] = await j('GET', '/cliente/agendamentos', null, tk);
+  const atual = minhas?.find((x) => Number(x.id_agendamento) === Number(ag?.id_agendamento));
+  const [, pub] = await j('GET', `/disponibilidade?servico=${dados.idServico}&data=${quarta}`, null, null);
+  remarcado = { tk, id: ag?.id_agendamento };
+  return confere(s0 === 201 && sd === 200 && d?.horarios?.includes(novaHora) && sr === 200 && r?.hora_inicio === novaHora
+    && atual?.hora_inicio === novaHora && !pub?.horarios?.includes(novaHora),
+  `agendar ${s0}, horários ${sd}, remarcar ${sr}, hora atual ${atual?.hora_inicio}, novo horário ocupado para os outros ${!pub?.horarios?.includes(novaHora)}`);
+});
+
+await passo('Remarcar para horário ocupado é recusado (409); outra conta não remarca (404)', async () => {
+  const ocupado = dados.horarios.at(-1); // ocupado pelo vencedor do teste de concorrência
+  const [s] = await j('POST', `/cliente/agendamentos/${remarcado?.id}/remarcar`, { data: quarta, hora_inicio: ocupado }, remarcado?.tk);
+  const [, outra] = await j('POST', '/clientes/cadastro', { nome: 'Outra Conta Teste', email: `outra-${email}`, telefone: telefone(21), senha: 'senha-de-teste-123' }, null);
+  const [o] = await j('POST', `/cliente/agendamentos/${remarcado?.id}/remarcar`, { data: quarta, hora_inicio: dados.horarios[2] }, outra?.token);
+  return confere(s === 409 && o === 404, `ocupado ${s}, outra conta ${o}`);
+});
+
+await passo('Painel: clientes (busca, conta e histórico)', async () => {
+  const [s, lista] = await j('GET', `/admin/clientes?busca=${encodeURIComponent('Cliente Conta Teste')}`);
+  const c = Array.isArray(lista) ? lista.find((x) => x.email === email) : null;
+  const [sd, det] = c ? await j('GET', `/admin/clientes/${c.id_cliente}`) : [0, null];
+  return confere(s === 200 && c?.tem_conta === true && sd === 200 && det?.agendamentos?.length >= 1 && typeof c.gasto === 'number',
+    `lista ${s}, achou ${Boolean(c)}, detalhe ${sd}`);
+});
+
+await passo('Painel: relatório do dia de teste (totais e por serviço)', async () => {
+  const [s, r] = await j('GET', `/admin/relatorios?inicio=${quarta}&fim=${quarta}`);
+  const svc = r?.porServico?.find((x) => x.id_servico === dados.idServico);
+  const [ruim] = await j('GET', '/admin/relatorios?inicio=abc&fim=2026-01-01');
+  return confere(s === 200 && r.totais.agendamentos >= 2 && svc?.quantidade >= 1 && typeof r.totais.receita_prevista === 'number' && ruim === 400,
+    `status ${s}, agendamentos ${r?.totais?.agendamentos}, serviço ${JSON.stringify(svc)}, período inválido ${ruim}`);
 });
 
 // Limpeza: cancela o que ficou ativo, desativa o serviço e remove o horário criado pelo script
