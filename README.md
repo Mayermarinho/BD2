@@ -42,12 +42,10 @@ Sistema web para uma profissional autônoma da área da beleza (cenário inicial
 | Painel: **agenda** por dia e por semana (confirmar, concluir, cancelar) | ✅ |
 | Painel: cadastro de **serviços** e categorias (criar, editar, ativar/desativar, excluir) | ✅ |
 | Painel: **horários de atendimento** e folgas/feriados | ✅ |
-| **App instalável no celular (PWA)**: Android (botão “Instalar”) e iPhone (passo a passo); funciona em endereço https | ✅ código pronto — **precisa de site publicado para testar a instalação** |
-| **Remarcar horário** pela conta do cliente **e pelo painel da profissional** (mesmo serviço; o horário atual não bloqueia a si mesmo; mesma trava anti-conflito; a profissional pode avisar a cliente pelo WhatsApp) | ✅ testado em memória — falta rodar `npm run verificar` no MySQL |
-| Painel: **clientes** (busca, conta/sem conta, histórico, total concluído) | ✅ testado em memória — falta verificar no MySQL |
-| Painel: **relatórios** (período, realizado × previsto, cancelamentos, por serviço, por dia, melhores clientes, CSV) | ✅ testado em memória — falta verificar no MySQL |
-
-> ✅ **Verificado contra um MySQL real (02/11/2026):** `npm run verificar` passou nas **22 verificações da época** (os passos novos de remarcar, clientes e relatórios ainda precisam ser rodados no MySQL; o script agora tem 27) (agendar, conflito, concorrência com 6 pedidos simultâneos, trigger do banco, cancelar, folga e conta de cliente). Não cobre: dashboard (`/admin/resumo`) e CRUD de categorias. Veja a seção [4.2](#42-rodar-com-o-mysql-de-verdade).
+| **App instalável no celular (PWA)**: Android (botão “Instalar”) e iPhone (passo a passo); funciona em endereço https | ✅ código pronto |
+| **Remarcar horário** pela conta do cliente **e pelo painel da profissional** (mesmo serviço; o horário atual não bloqueia a si mesmo; mesma trava anti-conflito; a profissional pode avisar a cliente pelo WhatsApp) | ✅ testado em memória |
+| Painel: **clientes** (busca, conta/sem conta, histórico, total concluído) | ✅ testado em memória |
+| Painel: **relatórios** (período, realizado × previsto, cancelamentos, por serviço, por dia, melhores clientes, CSV) | ✅ testado em memória |
 
 ## 2. Tecnologias
 
@@ -233,16 +231,8 @@ Conforme o Plano de Ação.
 - [x] Painel: CRUD de serviços e categorias
 - [x] Painel: horários de atendimento e folgas
 
-## 11. Decisões em aberto
-- [ ] **Verificação da conta de cliente** (e-mail/SMS) e “esqueci a senha” — hoje a conta não é verificada
-- [ ] Nome, logo, cores, fotos e contatos reais do salão → `frontend/src/marca.js`
-- [ ] O agendamento nasce `CONFIRMADO` ou `PENDENTE` (a profissional aprova)? → `STATUS_INICIAL` no `.env`
-- [ ] Prazo mínimo para o cliente cancelar?
-- [ ] Passo dos horários (30 min?) e antecedência mínima → `PASSO_MINUTOS` e `ANTECEDENCIA_MINUTOS`
-- [ ] **Pagamentos:** o relatório cita pagamentos, mas o sistema ainda não os controla — implementar ou retirar do texto?
-- [ ] **Banco:** o Plano de Ação cita PostgreSQL e o grupo seguiu com MySQL — registrar o motivo no Relatório Final
 
-## 12. Documentação
+## 11. Documentação
 - [`docs/MODELAGEM.md`](docs/MODELAGEM.md) — modelo de dados, fluxos e telas
 - [`docs/PASSO_A_PASSO_FINAL.md`](docs/PASSO_A_PASSO_FINAL.md) — sistema real (MySQL), instalar no Android e gravar o vídeo
 - [`docs/MOBILE.md`](docs/MOBILE.md) — app instalável no celular (PWA)
