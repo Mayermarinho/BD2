@@ -79,6 +79,13 @@ npm install
 npm run verificar
 ```
 
+**Se você trocou a senha do painel** (Parte 5), o script precisa saber a senha nova: abra `backend\.env` e acrescente (sem espaços, e não envie esse arquivo ao GitHub):
+```
+ADMIN_EMAIL=admin@mariana.com
+ADMIN_SENHA=sua-senha-nova
+```
+Sem isso o login do script falha (erro 401) e ele para logo no segundo passo.
+
 Deve terminar com `TUDO CERTO`. O arquivo `backend\resultado-verificacao.txt` é a evidência para o relatório (mande ao grupo).
 Se aparecer `FALHOU`, mande o arquivo e o texto do terminal.
 

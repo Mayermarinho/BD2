@@ -74,6 +74,28 @@ url = `http://localhost:${srv.address().port}/api`;
 
 const dados = { idServico: null, idHorario: null, ag: [], horarios: [], tokenCliente: null };
 
+async function encerrar(aviso = '') {
+  let versao = '';
+  if (pool) {
+    try { versao = (await pool.query('SELECT VERSION() AS v'))[0][0].v; } catch { /* ignora */ }
+  }
+  const resumo = falhas === 0 ? `TUDO CERTO: ${contador} verificações OK.` : `ATENÇÃO: ${falhas} de ${contador} verificações FALHARAM.`;
+  console.log(`\n${aviso ? `${aviso}\n\n` : ''}${resumo}\n`);
+  const cab = [
+    'Verificação do Sistema de Agendamento',
+    `Data/hora: ${new Date().toLocaleString('pt-BR', { timeZone: config.fusoHorario })}`,
+    `Modo: ${demo ? 'DEMO (memória, sem banco)' : `MySQL ${versao}`}`,
+    `Node: ${process.version}`,
+    `Data usada nos testes: ${quarta}`,
+    '',
+  ];
+  writeFileSync(new URL('../resultado-verificacao.txt', import.meta.url), `${[...cab, ...linhas, '', ...(aviso ? [aviso, ''] : []), resumo].join('\n')}\n`);
+  console.log('Resultado salvo em backend/resultado-verificacao.txt');
+  srv.close();
+  if (pool) await pool.end();
+  process.exit(falhas === 0 ? 0 : 1);
+}
+
 console.log(`\nVerificação (${demo ? 'MODO DEMO, em memória' : 'MySQL do .env'}) - data de teste: ${quarta}\n`);
 
 await passo('API responde e o banco está acessível (/api/saude)', async () => {
@@ -86,6 +108,15 @@ await passo(`Login da profissional (${ADMIN_EMAIL})`, async () => {
   token = b?.token ?? null;
   return confere(s === 200 && token, `status ${s} (rode 03_dev_admin.sql ou informe ADMIN_EMAIL/ADMIN_SENHA)`);
 });
+
+if (!token) {
+  await encerrar(
+    'PARADO: o login da profissional falhou, então os demais passos (que dependem do painel) foram cancelados.\n'
+    + `Usuário tentado: ${ADMIN_EMAIL}. A senha usada foi a de ADMIN_SENHA no .env (ou "admin123" se não existir).\n`
+    + 'Como resolver: abra backend\\.env e acrescente as linhas ADMIN_EMAIL=... e ADMIN_SENHA=... com a senha ATUAL do painel;\n'
+    + 'ou, se nunca rodou o script 03_dev_admin.sql, rode-o para usar a senha de teste admin123. Depois rode "npm run verificar" de novo.',
+  );
+}
 
 await passo('Painel exige login (sem token = 401)', async () => {
   const [s] = await j('GET', '/admin/servicos', null, null);
@@ -249,23 +280,4 @@ if (dados.idServico) {
 }
 if (dados.idHorario) await j('DELETE', `/admin/horarios/${dados.idHorario}`);
 
-let versao = '';
-if (pool) {
-  try { versao = (await pool.query('SELECT VERSION() AS v'))[0][0].v; } catch { /* ignora */ }
-}
-const resumo = falhas === 0 ? `TUDO CERTO: ${contador} verificações OK.` : `ATENÇÃO: ${falhas} de ${contador} verificações FALHARAM.`;
-console.log(`\n${resumo}\n`);
-const cab = [
-  'Verificação do Sistema de Agendamento',
-  `Data/hora: ${new Date().toLocaleString('pt-BR', { timeZone: config.fusoHorario })}`,
-  `Modo: ${demo ? 'DEMO (memória, sem banco)' : `MySQL ${versao}`}`,
-  `Node: ${process.version}`,
-  `Data usada nos testes: ${quarta}`,
-  '',
-];
-writeFileSync(new URL('../resultado-verificacao.txt', import.meta.url), `${[...cab, ...linhas, '', resumo].join('\n')}\n`);
-console.log('Resultado salvo em backend/resultado-verificacao.txt');
-
-srv.close();
-if (pool) await pool.end();
-process.exit(falhas === 0 ? 0 : 1);
+await encerrar();
