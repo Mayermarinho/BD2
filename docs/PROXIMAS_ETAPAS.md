@@ -196,18 +196,22 @@ Corrigir o que as issues apontarem, na ordem: erros que impedem agendar, depois 
 ## 7. Etapa D: Vídeo e Relatório Final (02/11 a 06/11)
 
 ### 7.1 Relatório Final (Samara, com revisão de todos)
+**Rascunho pronto para revisar: [`docs/RELATORIO_FINAL_RASCUNHO.md`](RELATORIO_FINAL_RASCUNHO.md).**
+
 Reaproveitar o `docs/REVISAO_RELATORIO_PARCIAL.md`, que lista o que corrigir em relação ao Parcial:
 
 - Banco: PostgreSQL no Plano, **MySQL** no sistema (justificar).
-- 8 tabelas (com `conta_cliente`) e **DER atualizado** (o do Parcial está desatualizado).
+- 9 tabelas (com `bloqueio_agenda` e `conta_cliente`) e **DER atualizado** (o do Parcial está desatualizado).
 - "Pagamentos": explicar que só se registra o valor cobrado.
 - A estatística de "80% dos conflitos" precisa de fonte ou deve ser reformulada.
 - A prevenção de conflito tem dois níveis (trigger + trava na API); explicar o limite do trigger sozinho.
-- Resultados: testes automatizados (33 + 13), roteiro do MySQL (seção 3.3), prints.
+- Resultados: testes automatizados (33 + 14), roteiro do MySQL (seção 3.3), prints.
 - Limitações e trabalhos futuros: verificação de e-mail, pagamento online, remarcação (se não ficar pronta).
 - Referências e formatação conforme modelo da UNIVESP/ABNT.
 
 ### 7.2 Vídeo (roteiro: Amanda e Marcela)
+**Roteiro com falas e ações de tela: [`docs/ROTEIRO_VIDEO.md`](ROTEIRO_VIDEO.md).**
+
 Sugestão de sequência (5 a 7 minutos, conforme limite do AVA):
 
 1. **Problema:** como a profissional agenda hoje e o que dá errado.
