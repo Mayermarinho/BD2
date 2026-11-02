@@ -4,8 +4,9 @@ import { calcularHorariosLivres } from './slots.js';
 /**
  * Horários livres de um serviço em uma data.
  * `repo` pode ser o repositório normal ou o `tx` dentro de uma transação.
+ * `ignorarId`: agendamento a desconsiderar (usado ao remarcar, para o horário atual não bloquear a si mesmo).
  */
-export async function buscarHorariosLivres(repo, servico, data, config) {
+export async function buscarHorariosLivres(repo, servico, data, config, ignorarId = null) {
   const agora = agoraNoFuso(config.fusoHorario);
   if (data < agora.data) return { horarios: [], motivoIndisponivel: 'Data no passado.' };
 
@@ -15,7 +16,7 @@ export async function buscarHorariosLivres(repo, servico, data, config) {
   const janelas = await repo.janelasDoDia(servico.id_profissional, diaDaSemana(data));
   if (!janelas.length) return { horarios: [], motivoIndisponivel: 'Sem atendimento neste dia da semana.' };
 
-  const ocupados = await repo.ocupadosDoDia(servico.id_profissional, data);
+  const ocupados = await repo.ocupadosDoDia(servico.id_profissional, data, ignorarId);
   const horarios = calcularHorariosLivres({
     janelas,
     ocupados,

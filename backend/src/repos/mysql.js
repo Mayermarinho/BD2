@@ -42,10 +42,11 @@ function consultas(ex) {
          FROM horario_disponivel WHERE id_profissional = ? AND dia_semana = ?
         ORDER BY horario_disponivel.hora_inicio`, [idProfissional, DIAS[diaSemana]]),
 
-    ocupadosDoDia: (idProfissional, data) => q(
+    ocupadosDoDia: (idProfissional, data, ignorarId = null) => q(
       `SELECT ${HORA('hora_inicio')} AS hora_inicio, ${HORA('hora_fim')} AS hora_fim
          FROM agendamento
-        WHERE id_profissional = ? AND data_agendamento = ? AND status <> 'CANCELADO'`, [idProfissional, data]),
+        WHERE id_profissional = ? AND data_agendamento = ? AND status <> 'CANCELADO'
+          AND id_agendamento <> ?`, [idProfissional, data, ignorarId ?? 0]),
 
     async cancelarPeloCliente({ id, telefone, motivo }) {
       const r = await ex.query(
@@ -97,6 +98,17 @@ function consultas(ex) {
       return r[0].affectedRows > 0;
     },
 
+    // Remarcar: dados do agendamento da própria conta (com a duração do serviço)
+    async obterAgendamentoDoCliente(id, idCliente) {
+      const rows = await q(
+        `SELECT a.id_agendamento, a.id_profissional, a.id_servico, a.data_agendamento,
+                ${HORA('a.hora_inicio')} AS hora_inicio, ${HORA('a.hora_fim')} AS hora_fim, a.status,
+                s.nome AS servico, s.duracao_minutos, s.ativo
+           FROM agendamento a JOIN servico s ON s.id_servico = a.id_servico
+          WHERE a.id_agendamento = ? AND a.id_cliente = ?`, [id, idCliente]);
+      return rows[0] ? { ...rows[0], ativo: Boolean(rows[0].ativo) } : null;
+    },
+
     async buscarUsuarioPorEmail(email) {
       const rows = await q(
         `SELECT id_usuario, id_profissional, nome, email, senha_hash, perfil
@@ -114,6 +126,17 @@ function consultas(ex) {
          JOIN servico s ON s.id_servico = a.id_servico
         WHERE a.id_profissional = ? AND a.data_agendamento BETWEEN ? AND ?
         ORDER BY a.data_agendamento, a.hora_inicio`, [idProfissional, inicio, fim]),
+
+    // Clientes que já agendaram com a profissional (com ou sem conta)
+    async listarClientesDaProfissional(idProfissional) {
+      const rows = await q(
+        `SELECT c.id_cliente, c.nome, c.telefone, c.email,
+                EXISTS (SELECT 1 FROM conta_cliente k WHERE k.id_cliente = c.id_cliente) AS tem_conta
+           FROM cliente c
+          WHERE EXISTS (SELECT 1 FROM agendamento a WHERE a.id_cliente = c.id_cliente AND a.id_profissional = ?)
+          ORDER BY c.nome`, [idProfissional]);
+      return rows.map((r) => ({ ...r, tem_conta: Boolean(r.tem_conta) }));
+    },
 
     async statusDoAgendamento(id, idProfissional) {
       const rows = await q('SELECT status FROM agendamento WHERE id_agendamento = ? AND id_profissional = ?', [id, idProfissional]);
@@ -278,6 +301,22 @@ function consultas(ex) {
       }
       const r = await ex.query('INSERT INTO cliente (nome, telefone, email) VALUES (?, ?, ?)', [nome, telefone, email]);
       return r[0].insertId;
+    },
+
+    async remarcarAgendamento({ id, data, hora_inicio, hora_fim, status }) {
+      try {
+        await q(
+          `UPDATE agendamento SET data_agendamento = ?, hora_inicio = ?, hora_fim = ?, status = ?
+            WHERE id_agendamento = ? AND status IN ('PENDENTE','CONFIRMADO')`, [data, hora_inicio, hora_fim, status, id]);
+      } catch (e) {
+        if (ehConflito(e)) throw new ConflitoError(); // trigger trg_impede_conflito_horario_update
+        throw e;
+      }
+      const rows = await q(
+        `SELECT id_agendamento, data_agendamento, ${HORA('hora_inicio')} AS hora_inicio,
+                ${HORA('hora_fim')} AS hora_fim, status
+           FROM agendamento WHERE id_agendamento = ?`, [id]);
+      return rows[0];
     },
 
     async inserirAgendamento(a) {

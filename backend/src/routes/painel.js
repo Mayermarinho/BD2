@@ -1,6 +1,7 @@
 // Rotas do painel da profissional (todas exigem login; dados sempre filtrados pela profissional logada).
 import { Router } from 'express';
 import { agoraNoFuso, dataValida, horaValida } from '../datas.js';
+import { gerarRelatorio, resumirClientes } from '../relatorios.js';
 import { paraMinutos } from '../slots.js';
 
 const texto = (v, max) => String(v ?? '').trim().slice(0, max);
@@ -58,6 +59,38 @@ export function rotasPainel(repo, config) {
           && (a.data_agendamento > hoje || (a.data_agendamento === hoje && paraMinutos(a.hora_fim) > agora.minutos)))
         .slice(0, 6),
     });
+  });
+
+  // ===== Clientes (quem já agendou com a profissional) =====
+  const TUDO = ['2000-01-01', '2999-12-31'];
+  const semAcento = (t) => String(t).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+
+  r.get('/clientes', async (req, res) => {
+    const busca = semAcento(texto(req.query.busca, 60));
+    const digitos = busca.replace(/\D/g, '');
+    const [clientes, historico] = await Promise.all([repo.listarClientesDaProfissional(prof(req)), repo.agendaDoPeriodo(prof(req), ...TUDO)]);
+    const lista = resumirClientes(clientes, historico, agoraNoFuso(config.fusoHorario).data)
+      .filter((c) => !busca || semAcento(c.nome).includes(busca) || semAcento(c.email ?? '').includes(busca)
+        || (digitos.length >= 3 && String(c.telefone).replace(/\D/g, '').includes(digitos)));
+    res.json(lista);
+  });
+
+  r.get('/clientes/:id', async (req, res) => {
+    const [clientes, historico] = await Promise.all([repo.listarClientesDaProfissional(prof(req)), repo.agendaDoPeriodo(prof(req), ...TUDO)]);
+    const [c] = resumirClientes(clientes.filter((x) => x.id_cliente === idDe(req)), historico, agoraNoFuso(config.fusoHorario).data);
+    if (!c) return naoEncontrado(res, 'Cliente');
+    const agendamentos = historico.filter((a) => a.id_cliente === c.id_cliente)
+      .sort((x, y) => y.data_agendamento.localeCompare(x.data_agendamento) || y.hora_inicio.localeCompare(x.hora_inicio));
+    res.json({ ...c, agendamentos });
+  });
+
+  // ===== Relatórios: /api/admin/relatorios?inicio=2026-11-01&fim=2026-11-30 =====
+  r.get('/relatorios', async (req, res) => {
+    const { inicio, fim } = req.query;
+    if (!dataValida(inicio) || !dataValida(fim)) return bad(res, ['informe "inicio" e "fim" (AAAA-MM-DD)']);
+    if (fim < inicio) return bad(res, ['a data final não pode ser antes da inicial']);
+    if (fim > somarDias(inicio, 366)) return bad(res, ['o período pode ter no máximo 366 dias']);
+    res.json(gerarRelatorio(await repo.agendaDoPeriodo(prof(req), inicio, fim), inicio, fim));
   });
 
   // ===== Serviços =====

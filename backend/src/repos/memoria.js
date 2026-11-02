@@ -66,8 +66,8 @@ export function criarRepoMemoria({ fuso = 'America/Sao_Paulo' } = {}) {
       return db.janelas.filter((j) => j.id_profissional === idProf && j.dia === dia)
         .map(({ hora_inicio, hora_fim }) => ({ hora_inicio, hora_fim })).sort((a, b) => a.hora_inicio.localeCompare(b.hora_inicio));
     },
-    async ocupadosDoDia(idProf, data) {
-      return db.agendamentos.filter((a) => a.id_profissional === idProf && a.data_agendamento === data && ativo(a))
+    async ocupadosDoDia(idProf, data, ignorarId = null) {
+      return db.agendamentos.filter((a) => a.id_profissional === idProf && a.data_agendamento === data && ativo(a) && a.id_agendamento !== ignorarId)
         .map(({ hora_inicio, hora_fim }) => ({ hora_inicio, hora_fim }));
     },
     async cancelarPeloCliente({ id, telefone, motivo }) {
@@ -113,6 +113,13 @@ export function criarRepoMemoria({ fuso = 'America/Sao_Paulo' } = {}) {
       Object.assign(a, { status: 'CANCELADO', motivo_cancelamento: motivo, data_cancelamento: new Date().toISOString() });
       return true;
     },
+    async obterAgendamentoDoCliente(id, idCliente) {
+      const a = db.agendamentos.find((x) => x.id_agendamento === id && x.id_cliente === idCliente);
+      if (!a) return null;
+      const s = db.servicos.find((x) => x.id_servico === a.id_servico);
+      return { id_agendamento: a.id_agendamento, id_profissional: a.id_profissional, id_servico: a.id_servico, data_agendamento: a.data_agendamento,
+        hora_inicio: a.hora_inicio, hora_fim: a.hora_fim, status: a.status, servico: s.nome, duracao_minutos: s.duracao_minutos, ativo: s.ativo };
+    },
     async buscarUsuarioPorEmail(email) { return db.usuarios.find((u) => u.email.toLowerCase() === email) ?? null; },
     async agendaDoPeriodo(idProf, ini, fim) {
       return db.agendamentos.filter((a) => a.id_profissional === idProf && a.data_agendamento >= ini && a.data_agendamento <= fim)
@@ -124,6 +131,12 @@ export function criarRepoMemoria({ fuso = 'America/Sao_Paulo' } = {}) {
             status: a.status, observacao: a.observacao ?? null, id_cliente: c.id_cliente, cliente: c.nome, telefone_cliente: c.telefone,
             id_servico: s.id_servico, servico: s.nome, preco: a.preco_cobrado ?? s.preco };
         });
+    },
+    async listarClientesDaProfissional(idProf) {
+      const ids = new Set(db.agendamentos.filter((a) => a.id_profissional === idProf).map((a) => a.id_cliente));
+      return db.clientes.filter((c) => ids.has(c.id_cliente))
+        .map((c) => ({ id_cliente: c.id_cliente, nome: c.nome, telefone: c.telefone, email: c.email ?? null, tem_conta: db.contas.some((k) => k.id_cliente === c.id_cliente) }))
+        .sort((a, b) => a.nome.localeCompare(b.nome));
     },
     async statusDoAgendamento(id, idProf) {
       return db.agendamentos.find((a) => a.id_agendamento === id && a.id_profissional === idProf)?.status ?? null;
@@ -227,6 +240,16 @@ export function criarRepoMemoria({ fuso = 'America/Sao_Paulo' } = {}) {
       if (c) { c.email ??= email; return c.id_cliente; }
       db.clientes.push({ id_cliente: ++db.seq.cliente, nome, telefone, email });
       return db.seq.cliente;
+    },
+    async remarcarAgendamento({ id, data, hora_inicio, hora_fim, status }) {
+      const a = db.agendamentos.find((x) => x.id_agendamento === id);
+      if (!a || !['PENDENTE', 'CONFIRMADO'].includes(a.status)) throw new ConflitoError('Este agendamento não pode mais ser remarcado.');
+      const novo = { ...a, data_agendamento: data, hora_inicio, hora_fim };
+      const conflito = db.agendamentos.some((x) => x.id_agendamento !== id && x.id_profissional === a.id_profissional
+        && x.data_agendamento === data && ativo(x) && sobrepoe(novo, x)); // espelha trg_impede_conflito_horario_update
+      if (conflito) throw new ConflitoError();
+      Object.assign(a, { data_agendamento: data, hora_inicio, hora_fim, status });
+      return { id_agendamento: id, data_agendamento: data, hora_inicio, hora_fim, status };
     },
     async inserirAgendamento(a) {
       const n = inserir({ id_cliente: a.id_cliente, id_servico: a.id_servico, id_profissional: a.id_profissional,
