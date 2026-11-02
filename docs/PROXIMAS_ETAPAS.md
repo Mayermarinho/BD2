@@ -1,6 +1,18 @@
 # Próximas etapas e instruções
 
-> Atualizado em **21/10/2026**: a Quinzena 5 terminou em 18/10 e estamos na **Quinzena 6 (19/10 a 01/11)**. Datas e responsáveis seguem o
+> Atualizado em **02/11/2026**: a Quinzena 6 terminou em 01/11 e estamos na **Quinzena 7 (02/11 a 06/11)**, a da entrega. **Restam 4 dias.** Não criar novas funções: priorizar a seção 0.
+
+## 0. Plano de emergência (02/11 a 06/11)
+
+| Dia | O que fazer |
+|---|---|
+| **Seg 02 a ter 03** | Rodar `npm run verificar` no MySQL real (seção 3) e anexar `resultado-verificacao.txt`. Refazer o Teste 3 do Parcial com print. Combinar a sessão com a profissional. |
+| **Ter 03 a qua 04** | Sessão de validação com a profissional (seção 6.5) e testes rápidos de acessibilidade/celular (6.3). Registrar com prints. |
+| **Qua 04 a qui 05** | Gravar o vídeo (roteiro na seção 8.2, usando o `npm run demo` ou o banco real) e fechar o texto do Relatório Final. |
+| **Qui 05 a sex 06** | Revisão coletiva e **entrega em 06/11** (Samara). |
+
+O que **não** entra agora e vai para "trabalhos futuros" no relatório: remarcar horário, clientes e relatórios no painel, lembretes por WhatsApp, app nativo e publicação na nuvem.
+ Datas e responsáveis seguem o
 > [Plano de Ação](../PLANO%20DE%20A%C3%87%C3%83O%20GRUPO%204.pdf). Onde o Plano não diz quem faz algo novo, está
 > marcado como **sugestão**: o grupo decide.
 

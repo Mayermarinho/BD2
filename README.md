@@ -42,6 +42,8 @@ Sistema web para uma profissional autônoma da área da beleza (cenário inicial
 | Painel: **agenda** por dia e por semana (confirmar, concluir, cancelar) | ✅ |
 | Painel: cadastro de **serviços** e categorias (criar, editar, ativar/desativar, excluir) | ✅ |
 | Painel: **horários de atendimento** e folgas/feriados | ✅ |
+| **App instalável no celular (PWA)**: Android (botão “Instalar”) e iPhone (passo a passo); funciona em endereço https | ✅ código pronto — **precisa de site publicado para testar a instalação** |
+| App nativo (Play Store / App Store) | ⏳ melhoria futura (ver `docs/MOBILE.md`) |
 | Remarcar horário pela conta do cliente | ⏳ |
 | Painel: clientes e relatórios | ⏳ etapa 3 |
 | Lembretes por WhatsApp | ⏳ melhoria futura (hoje só um link `wa.me`) |
@@ -195,7 +197,7 @@ Base: `/api`. Detalhes e exemplos em [`backend/README.md`](backend/README.md).
 ## 7. Testes
 ```bash
 cd backend  && npm test    # horários livres + API pública e do painel (33 testes)
-cd frontend && npm test    # fluxo do cliente e do painel ligados à API (13 testes)
+cd frontend && npm test    # fluxo do cliente e do painel ligados à API (14 testes)
 ```
 Os testes não precisam de MySQL (usam o repositório em memória). A ligação com o MySQL real ainda precisa ser validada (ver seção 1).
 
@@ -246,6 +248,7 @@ Conforme o Plano de Ação.
 
 ## 12. Documentação
 - [`docs/MODELAGEM.md`](docs/MODELAGEM.md) — modelo de dados, fluxos e telas
+- [`docs/MOBILE.md`](docs/MOBILE.md) — app no celular (PWA agora; Android e iPhone nativos depois)
 - [`docs/PROXIMAS_ETAPAS.md`](docs/PROXIMAS_ETAPAS.md) — roteiro de testes no MySQL, etapas até 06/11 e instruções para o grupo
 - [`docs/REVISAO_RELATORIO_PARCIAL.md`](docs/REVISAO_RELATORIO_PARCIAL.md) — o que ajustar no relatório
 - [`database/mysql/README.md`](database/mysql/README.md) — montar o banco

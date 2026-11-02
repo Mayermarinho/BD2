@@ -271,3 +271,19 @@ describe('home, conta de cliente e login único', () => {
     expect(screen.getByRole('navigation', { name: 'Painel da profissional' })).toBeInTheDocument();
   });
 });
+
+describe('instalar como app (PWA)', () => {
+  it('no iPhone mostra o passo a passo; no computador não mostra nada', async () => {
+    const original = Object.getOwnPropertyDescriptor(window.navigator, 'userAgent');
+    Object.defineProperty(window.navigator, 'userAgent', { value: 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) Safari', configurable: true });
+    const { InstalarApp } = await import('../src/instalar.jsx');
+    const { unmount } = render(<InstalarApp />);
+    expect(screen.getByText(/Instalar no iPhone/i)).toBeInTheDocument();
+    expect(screen.getByText(/Adicionar à Tela de Início/i)).toBeInTheDocument();
+    unmount();
+    Object.defineProperty(window.navigator, 'userAgent', { value: 'Mozilla/5.0 (Windows NT 10.0) Chrome', configurable: true });
+    const { container } = render(<InstalarApp />);
+    expect(container).toBeEmptyDOMElement();
+    if (original) Object.defineProperty(window.navigator, 'userAgent', original);
+  });
+});

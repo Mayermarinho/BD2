@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { Link, Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { useAuth } from './auth.jsx';
+import { InstalarApp } from './instalar.jsx';
 import { marca } from './marca.js';
 import AdminLayout from './pages/admin/AdminLayout.jsx';
 import Agenda from './pages/admin/Agenda.jsx';
@@ -92,6 +93,7 @@ export default function App() {
         <Link to="/cancelar">Cancelar horário sem conta</Link>
         <span className="rodape__sep" aria-hidden="true">·</span>
         <span>Projeto Integrador UNIVESP · Grupo 4</span>
+        {!noPainel && <InstalarApp />}
       </footer>
     </>
   );

@@ -364,3 +364,10 @@ body.painel { background: #f5f6f8; }
   .faixa--escura .passo:not(:last-child)::after { content: ''; position: absolute; top: 4.5rem; right: -2rem; width: 2rem; border-top: 2px dashed rgba(255, 255, 255, .4); }
 }
 @media (prefers-reduced-motion: reduce) { .passo { transition: none; } .passo:hover { transform: none; } }
+
+/* ===== Convite para instalar o app (PWA) ===== */
+.instalar { flex-basis: 100%; margin-top: .4rem; font-size: .9rem; }
+.instalar--ios { max-width: 26rem; margin-inline: auto; text-align: center; }
+.instalar--ios summary { cursor: pointer; color: var(--cor-primaria); font-weight: 600; }
+.instalar--ios p { margin: .4rem 0 0; }
+@media print { .instalar { display: none; } }
