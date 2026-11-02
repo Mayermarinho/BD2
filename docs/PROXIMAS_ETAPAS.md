@@ -6,23 +6,23 @@
 
 | Dia | O que fazer |
 |---|---|
-| **Seg 02 a ter 03** | ✅ `npm run verificar` no MySQL real: 22 OK. **Rodar de novo** (agora 26 passos, com remarcar, clientes e relatórios) e anexar `resultado-verificacao.txt`. Falta refazer o Teste 3 do Parcial com print. |
+| **Seg 02 a ter 03** | ✅ `npm run verificar` no MySQL real: 22 OK. **Rodar de novo** (agora 27 passos, com remarcar, clientes e relatórios) e anexar `resultado-verificacao.txt`. Falta refazer o Teste 3 do Parcial com print. |
 | **Ter 03 a qua 04** | Repetir os testes funcionais (seção 6.1) e de integração (6.2) e registrar com prints. |
 | **Qua 04 a qui 05** | Gravar o vídeo (roteiro na seção 8.2, usando o `npm run demo` ou o banco real) e fechar o texto do Relatório Final. |
 | **Qui 05 a sex 06** | Revisão coletiva e **entrega em 06/11** (Samara). |
 
-Prontos (02/11): **remarcar pela conta do cliente**, **clientes** e **relatórios** no painel. Ficam como "trabalhos futuros": remarcar pelo painel da profissional e observações por cliente.
+Prontos (02/11): **remarcar pela conta do cliente**, **clientes** e **relatórios** no painel. Também pronto: **remarcar pelo painel da profissional**. Fica como "trabalho futuro": observações por cliente.
  Datas e responsáveis seguem o
 > [Plano de Ação](../PLANO%20DE%20A%C3%87%C3%83O%20GRUPO%204.pdf). Onde o Plano não diz quem faz algo novo, está
 > marcado como **sugestão**: o grupo decide.
 
 ## 1. Onde estamos
 
-**Pronto e testado só com dados em memória** (backend 44 testes, frontend 20 testes):
+**Pronto e testado só com dados em memória** (backend 46 testes, frontend 21 testes):
 site do cliente (home, agendar com ou sem conta, cancelar, conta de cliente), painel da profissional (dashboard,
 agenda, serviços, horários e folgas) e regra anti-conflito de horário.
 
-**Já verificado no MySQL real (02/11/2026):** `npm run verificar` passou nas **22 verificações** (antes de remarcar, clientes e relatórios; o script atual tem **26** e precisa ser rodado de novo), incluindo
+**Já verificado no MySQL real (02/11/2026):** `npm run verificar` passou nas **22 verificações** (antes de remarcar, clientes e relatórios; o script atual tem **27** e precisa ser rodado de novo), incluindo
 concorrência (6 pedidos simultâneos, só 1 vence) e o trigger do banco. Os scripts `01` a `04` e o arquivo
 `backend/src/repos/mysql.js` funcionaram. **Ainda fora do roteiro automático:** o dashboard (`/api/admin/resumo`) e o
 CRUD de categorias: conferir na tela do painel.
@@ -97,7 +97,7 @@ Em outro terminal: `cd frontend`, `npm install`, `npm run dev`, e abra `http://l
 npm run verificar
 ```
 
-O script usa o MySQL do `.env`, executa 20 verificações (serviço, horários, agendamento, conflito, **concorrência com 6 pedidos simultâneos**, **trigger do banco**, cancelamento, folga e conta de cliente) e escreve `OK` ou `FALHOU` em cada uma. O resultado fica salvo em `backend/resultado-verificacao.txt` (sem senhas, com a versão do MySQL): **anexe ao Relatório Final e mande o arquivo se algo falhar**.
+O script usa o MySQL do `.env`, executa 27 verificações (serviço, horários, agendamento, conflito, **concorrência com 6 pedidos simultâneos**, **trigger do banco**, cancelamento, folga e conta de cliente) e escreve `OK` ou `FALHOU` em cada uma. O resultado fica salvo em `backend/resultado-verificacao.txt` (sem senhas, com a versão do MySQL): **anexe ao Relatório Final e mande o arquivo se algo falhar**.
 
 - Precisa do `03_dev_admin.sql` executado (login `admin@mariana.com` / `admin123`), ou use as variáveis `ADMIN_EMAIL` e `ADMIN_SENHA`.
 - Grava dados de teste marcados com `[TESTE]` e, no fim, cancela os agendamentos e desativa o serviço. As contas de cliente de teste (`teste-...@exemplo.com`) ficam no banco. **Use o banco de desenvolvimento, nunca o de uso real.**
@@ -142,7 +142,7 @@ Em ordem de prioridade (as duas primeiras são as que mais pesam para a profissi
 
 | Prioridade | Item | O que inclui | Estado |
 |---|---|---|---|
-| 1 | **Remarcar horário** | Pela conta do cliente: mesmo serviço, novo dia/horário, respeitando conflitos. (Pelo painel da profissional: trabalho futuro.) | ✅ feito (falta `npm run verificar` no MySQL) |
+| 1 | **Remarcar horário** | Pela conta do cliente e pelo painel da profissional: mesmo serviço, novo dia/horário, respeitando conflitos (a profissional pode avisar a cliente pelo WhatsApp) | ✅ feito (falta `npm run verificar` no MySQL) |
 | 2 | **Painel: clientes** | Lista com busca por nome/telefone/e-mail, com/sem conta e histórico de cada cliente | ✅ feito (observações: futuro) |
 | 3 | **Painel: relatórios** | Período, realizado × previsto (`preco_cobrado`), cancelamentos, por serviço, por dia, melhores clientes e CSV | ✅ feito |
 | 4 | **Atualizar o `react-router-dom`** | O `npm audit` aponta 2 avisos moderados nessa biblioteca; atualizar e rodar os testes | ⏳ recomendado |
@@ -205,8 +205,8 @@ Reaproveitar o `docs/REVISAO_RELATORIO_PARCIAL.md`, que lista o que corrigir em 
 - "Pagamentos": explicar que só se registra o valor cobrado.
 - A estatística de "80% dos conflitos" precisa de fonte ou deve ser reformulada.
 - A prevenção de conflito tem dois níveis (trigger + trava na API); explicar o limite do trigger sozinho.
-- Resultados: testes automatizados (44 + 20), roteiro do MySQL (seção 3.3), prints.
-- Limitações e trabalhos futuros: verificação de e-mail, pagamento online, remarcar pelo painel da profissional.
+- Resultados: testes automatizados (46 + 21), roteiro do MySQL (seção 3.3), prints.
+- Limitações e trabalhos futuros: verificação de e-mail, pagamento online, observações por cliente.
 - Referências e formatação conforme modelo da UNIVESP/ABNT.
 
 ### 7.2 Vídeo (roteiro: Amanda e Marcela)

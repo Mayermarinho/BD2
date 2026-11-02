@@ -359,6 +359,8 @@ POST   /api/clientes/cadastro                  # público – conta de cliente
 GET    /api/cliente/agendamentos               # cliente – meus agendamentos
 GET    /api/cliente/agendamentos/:id/disponibilidade?data=   # cliente – horários para remarcar
 POST   /api/cliente/agendamentos/:id/remarcar  # cliente – remarcar (mesmo serviço)
+GET    /api/admin/agendamentos/:id/disponibilidade?data=   # admin – horários para remarcar
+POST   /api/admin/agendamentos/:id/remarcar    # admin – remarcar qualquer agendamento da agenda
 ```
 
 ### Estrutura de pastas

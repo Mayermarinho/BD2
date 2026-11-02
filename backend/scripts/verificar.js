@@ -311,6 +311,18 @@ await passo('Painel: relatório do dia de teste (totais e por serviço)', async 
     `status ${s}, agendamentos ${r?.totais?.agendamentos}, serviço ${JSON.stringify(svc)}, período inválido ${ruim}`);
 });
 
+await passo('Remarcar pelo painel da profissional (agendamento da conta de teste)', async () => {
+  const [sd, d] = await j('GET', `/admin/agendamentos/${remarcado?.id}/disponibilidade?data=${quarta}`);
+  const atual = somarMinutos(A(), 30); // horário em que a conta de teste está agora
+  const nova = d?.horarios?.find((h) => h !== atual);
+  const [s, r] = await j('POST', `/admin/agendamentos/${remarcado?.id}/remarcar`, { data: quarta, hora_inicio: nova });
+  const [, agenda] = await j('GET', `/admin/agenda?inicio=${quarta}&fim=${quarta}`);
+  const item = agenda?.find((x) => Number(x.id_agendamento) === Number(remarcado?.id));
+  const [rep] = await j('POST', `/admin/agendamentos/${remarcado?.id}/remarcar`, { data: quarta, hora_inicio: nova });
+  return confere(sd === 200 && nova && s === 200 && r?.hora_inicio === nova && item?.hora_inicio === nova && rep === 400,
+    `horários ${sd}, remarcar ${s}, na agenda ${item?.hora_inicio}, repetir o mesmo horário ${rep}`);
+});
+
 // Limpeza: cancela o que ficou ativo, desativa o serviço e remove o horário criado pelo script
 for (const id of dados.ag.filter(Boolean)) {
   await j('PATCH', `/admin/agendamentos/${id}`, { status: 'CANCELADO', motivo_cancelamento: '[TESTE] limpeza' });

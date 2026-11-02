@@ -62,7 +62,7 @@
 > agendamentos sobrepostos."
 
 **Parte C, o painel (≈ 1 min).**
-[Entre em `/entrar` com o login da profissional (senha oculta) → **Resumo** → **Agenda** (aparece o agendamento) → **Confirmar/Concluir** → **Clientes** (busque e abra o histórico) → **Relatórios** (mês atual) → **Serviços** (edite um preço) → **Horários e folgas** (crie uma folga no dia).]
+[Entre em `/entrar` com o login da profissional (senha oculta) → **Resumo** → **Agenda** (aparece o agendamento) → **Remarcar** (novo horário e o botão de avisar pelo WhatsApp) → **Confirmar/Concluir** → **Clientes** (busque e abra o histórico) → **Relatórios** (mês atual) → **Serviços** (edite um preço) → **Horários e folgas** (crie uma folga no dia).]
 
 > "Agora, a visão da profissional. Depois do login, ela vê o resumo do dia e a agenda com o agendamento que acabou de
 > chegar. Pode confirmar, concluir ou cancelar. Em Serviços, ela cadastra e edita nomes, preços e durações. Em Horários,
@@ -87,11 +87,11 @@
 prometa o que não aparece.)*
 
 ## Cena 6 · Banco de dados e testes (5:00–5:45) · Samara
-**Tela:** DBeaver com `SELECT * FROM agendamento` (a linha criada pelo site) → terminal com o fim do `npm run verificar`: `TUDO CERTO` (confira o número no seu resultado: o roteiro atual tem 26 verificações).
+**Tela:** DBeaver com `SELECT * FROM agendamento` (a linha criada pelo site) → terminal com o fim do `npm run verificar`: `TUDO CERTO` (confira o número no seu resultado: o roteiro atual tem 27 verificações).
 
-> "Aqui, no banco, está o agendamento que acabamos de criar pelo site. Para garantir a qualidade, temos 44 testes
-> automatizados na API e 20 na interface. Além disso, rodamos uma verificação ponta a ponta contra o MySQL de verdade,
-> com 26 passos: login, cadastro de serviços, agendamento, conflito de horário, cancelamento, conta de cliente, remarcar, clientes e relatórios.
+> "Aqui, no banco, está o agendamento que acabamos de criar pelo site. Para garantir a qualidade, temos 46 testes
+> automatizados na API e 21 na interface. Além disso, rodamos uma verificação ponta a ponta contra o MySQL de verdade,
+> com 27 passos: login, cadastro de serviços, agendamento, conflito de horário, cancelamento, conta de cliente, remarcar, clientes e relatórios.
 > Inclusive, 6 pedidos simultâneos para o mesmo horário resultaram em exatamente um agendamento."
 
 ## Cena 7 · Resultados, limitações e próximos passos (5:45–6:30) · Amanda e Marcela

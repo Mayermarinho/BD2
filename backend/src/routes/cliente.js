@@ -3,9 +3,8 @@ import bcrypt from 'bcryptjs';
 import { Router } from 'express';
 import rateLimit from 'express-rate-limit';
 import { assinarTokenCliente, exigirLogin } from '../auth.js';
-import { agoraNoFuso, dataValida, horaValida, normalizarTelefone } from '../datas.js';
-import { buscarHorariosLivres } from '../disponibilidade.js';
-import { paraMinutos, somarMinutos } from '../slots.js';
+import { dataValida, horaValida, normalizarTelefone } from '../datas.js';
+import { horariosParaRemarcar, remarcarAgendamento } from '../remarcar.js';
 
 export function rotasCliente(repo, config) {
   const r = Router();
@@ -54,55 +53,32 @@ export function rotasCliente(repo, config) {
   });
 
   // ===== Remarcar (só o horário; o serviço continua o mesmo) =====
-  const ATIVOS = ['PENDENTE', 'CONFIRMADO'];
-  const jaComecou = (a, agora) => a.data_agendamento < agora.data
-    || (a.data_agendamento === agora.data && paraMinutos(a.hora_inicio) <= agora.minutos);
   const idDe = (req) => Number.parseInt(req.params.id, 10);
+  const minha = (req) => (a) => a.id_cliente === req.usuario.id_cliente;
 
   // Horários livres para remarcar (o horário atual do próprio agendamento não conta como ocupado)
   logado.get('/agendamentos/:id/disponibilidade', async (req, res) => {
-    const id = idDe(req);
     const { data } = req.query;
-    if (!Number.isInteger(id) || !dataValida(data)) return res.status(400).json({ erro: 'Informe "data" (AAAA-MM-DD).' });
-    const a = await repo.obterAgendamentoDoCliente(id, req.usuario.id_cliente);
-    if (!a) return res.status(404).json({ erro: 'Agendamento não encontrado.' });
-    if (!ATIVOS.includes(a.status) || !a.ativo) return res.status(409).json({ erro: 'Este agendamento não pode ser remarcado.' });
-    const { horarios, motivoIndisponivel } = await buscarHorariosLivres(repo, a, data, config, a.id_agendamento);
-    res.json({ data, agendamento: id, horarios, motivoIndisponivel: motivoIndisponivel ?? null });
+    if (!Number.isInteger(idDe(req)) || !dataValida(data)) return res.status(400).json({ erro: 'Informe "data" (AAAA-MM-DD).' });
+    const a = await repo.obterAgendamentoParaRemarcar(idDe(req));
+    if (!a || !minha(req)(a)) return res.status(404).json({ erro: 'Agendamento não encontrado.' });
+    const r2 = await horariosParaRemarcar(repo, config, a, data);
+    res.status(r2.status).json(r2.corpo);
   });
 
   logado.post('/agendamentos/:id/remarcar', async (req, res) => {
-    const id = idDe(req);
     const { data, hora_inicio } = req.body ?? {};
     const erros = [];
-    if (!Number.isInteger(id)) erros.push('agendamento inválido');
+    if (!Number.isInteger(idDe(req))) erros.push('agendamento inválido');
     if (!dataValida(data)) erros.push('data inválida (AAAA-MM-DD)');
     if (!horaValida(hora_inicio)) erros.push('hora_inicio inválida (HH:MM)');
     if (erros.length) return res.status(400).json({ erro: 'Dados inválidos.', detalhes: erros });
-
-    const resultado = await repo.transacao(async (tx) => {
-      const antes = await tx.obterAgendamentoDoCliente(id, req.usuario.id_cliente);
-      if (!antes) return { status: 404, corpo: { erro: 'Agendamento não encontrado.' } };
-      await tx.travarProfissional(antes.id_profissional); // mesma trava da reserva: um pedido por vez
-
-      const a = await tx.obterAgendamentoDoCliente(id, req.usuario.id_cliente); // releitura já com a trava
-      if (!ATIVOS.includes(a.status)) return { status: 409, corpo: { erro: 'Este agendamento não pode mais ser remarcado.' } };
-      if (!a.ativo) return { status: 409, corpo: { erro: 'Este serviço não está mais disponível. Cancele e fale com a profissional.' } };
-      if (jaComecou(a, agoraNoFuso(config.fusoHorario))) return { status: 409, corpo: { erro: 'Este atendimento já começou ou passou e não pode ser remarcado.' } };
-      if (a.data_agendamento === data && a.hora_inicio === hora_inicio) {
-        return { status: 400, corpo: { erro: 'Escolha um dia ou horário diferente do atual.' } };
-      }
-
-      const { horarios } = await buscarHorariosLivres(tx, a, data, config, a.id_agendamento);
-      if (!horarios.includes(hora_inicio)) return { status: 409, corpo: { erro: 'Este horário não está mais disponível. Escolha outro.' } };
-
+    const r2 = await remarcarAgendamento(repo, config, {
+      id: idDe(req), pertence: minha(req), data, hora_inicio,
       // Se a profissional exige confirmação (STATUS_INICIAL=PENDENTE), o novo horário volta a aguardar confirmação.
-      const atualizado = await tx.remarcarAgendamento({
-        id, data, hora_inicio, hora_fim: somarMinutos(hora_inicio, a.duracao_minutos), status: config.statusInicial === 'PENDENTE' ? 'PENDENTE' : a.status,
-      });
-      return { status: 200, corpo: { ...atualizado, anterior: { data_agendamento: a.data_agendamento, hora_inicio: a.hora_inicio } } };
+      statusNovo: (a) => (config.statusInicial === 'PENDENTE' ? 'PENDENTE' : a.status),
     });
-    res.status(resultado.status).json(resultado.corpo);
+    res.status(r2.status).json(r2.corpo);
   });
 
   r.use('/cliente', logado);

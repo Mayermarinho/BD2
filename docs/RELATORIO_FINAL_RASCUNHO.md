@@ -32,7 +32,7 @@ agendamento, sem conflitos de horário. A metodologia adotada foi o Design Think
 Criar e Prototipar e Implementar e Testar. O sistema foi construído com React (interface), Node.js com Express (API) e
 banco de dados relacional MySQL, com controle de versão em Git/GitHub. O cálculo dos horários livres é feito na API a
 partir da grade semanal, das folgas e dos agendamentos existentes, e a regra de não sobreposição é garantida em dois
-níveis: trava transacional na API e *trigger* no banco. Os testes automatizados (44 de API e 20 de interface) e a
+níveis: trava transacional na API e *trigger* no banco. Os testes automatizados (46 de API e 21 de interface) e a
 verificação ponta a ponta contra um MySQL real (22 verificações, incluindo 6 requisições simultâneas ao mesmo horário)
 foram bem-sucedidos. Conclui-se que o sistema atende ao escopo definido no Plano de Ação e constitui uma base
 funcional para uso pela profissional; ficam como limitações a ausência de validação da interface com a profissional e
@@ -86,12 +86,11 @@ Objetivos específicos: manter os do Parcial e acrescentar:
 Manter o texto do Parcial. Acrescentar a delimitação do que foi entregue:
 
 **Escopo entregue:** cadastro de serviços e categorias; dias e horários de atendimento; folgas e feriados; consulta de
-serviços e horários livres; agendamento pelo cliente (com ou sem conta); cancelamento e **remarcação** pelo cliente (conta); agenda da
+serviços e horários livres; agendamento pelo cliente (com ou sem conta); cancelamento e **remarcação** pelo cliente (conta) e pela profissional (com aviso por link do WhatsApp); agenda da
 profissional com confirmação, conclusão e cancelamento; painel com resumo, **clientes** (busca e histórico) e **relatórios** (período, faturamento realizado e previsto, cancelamentos, por serviço; exporta CSV); uso em computador e celular (incluindo
 instalação como aplicativo, PWA).
 
-**Fora do escopo desta entrega:** pagamento online; envio automático de lembretes; remarcação pelo painel da profissional
-(só o cliente com conta remarca); publicação do sistema em servidor na internet.
+**Fora do escopo desta entrega:** pagamento online; envio automático de lembretes; observações por cliente; publicação do sistema em servidor na internet.
 
 ### 2.3 FUNDAMENTAÇÃO TEÓRICA
 Manter 2.3.1 a 2.3.3 do Parcial e acrescentar (cada fonte deve ser **conferida antes de citar**, ver Referências):
@@ -189,9 +188,9 @@ mensagens anunciadas por `aria-live` e contraste de cores. **Não foi realizada 
 
 | Teste | O que cobre | Resultado |
 |---|---|---|
-| Automatizados da API (44) | cálculo de horários, agendar, conflito, cancelar, remarcar, painel, clientes, relatórios, conta de cliente, permissões | 44 de 44 passaram |
-| Automatizados da interface (20) | fluxo do cliente, conta, remarcar, painel, clientes, relatórios, instalação do PWA | 20 de 20 passaram |
-| Verificação ponta a ponta no **MySQL real** (22 passos) | login, CRUD de serviço e horário, agendamento, conflito 409, concorrência (6 simultâneos), *trigger*, cancelamento, folga, conta de cliente | **22 de 22 OK** em 02/11/2026 (roteiro anterior à remarcação, clientes e relatórios; o script atual tem 26 passos: **[PREENCHER o novo resultado]**) **[PREENCHER versão do MySQL, que consta no `resultado-verificacao.txt`]** |
+| Automatizados da API (46) | cálculo de horários, agendar, conflito, cancelar, remarcar, painel, clientes, relatórios, conta de cliente, permissões | 46 de 46 passaram |
+| Automatizados da interface (21) | fluxo do cliente, conta, remarcar, painel, clientes, relatórios, instalação do PWA | 21 de 21 passaram |
+| Verificação ponta a ponta no **MySQL real** (22 passos) | login, CRUD de serviço e horário, agendamento, conflito 409, concorrência (6 simultâneos), *trigger*, cancelamento, folga, conta de cliente | **22 de 22 OK** em 02/11/2026 (roteiro anterior à remarcação, clientes e relatórios; o script atual tem 27 passos: **[PREENCHER o novo resultado]**) **[PREENCHER versão do MySQL, que consta no `resultado-verificacao.txt`]** |
 | *Triggers* no DBeaver/Workbench (`database/mysql/testes/teste_trigger.sql`) | inserção válida, sobreposta, encostada e `UPDATE` em conflito | **[PREENCHER com prints]** |
 
 Observação: a verificação deixou de fora o resumo do painel (`/admin`) e o CRUD de categorias, conferidos
@@ -225,11 +224,11 @@ verificação em MySQL real. O sistema funciona em computador e celular.
 - O sistema **não foi publicado em nuvem** (execução local; túnel temporário para teste no celular).
 - Dados de serviços, preços e horários são **fictícios**; falta cadastrar os reais.
 - Sem verificação de e-mail/telefone, sem recuperação de senha e sem aviso de privacidade (LGPD) na interface.
-- Pagamento online, lembretes automáticos (hoje só há o botão de WhatsApp que abre a conversa) e remarcação pelo painel da profissional ficaram para o futuro. O faturamento dos relatórios é estimado a partir do valor cobrado de cada agendamento (não há controle de pagamento).
+- Pagamento online, lembretes automáticos (hoje só há o botão de WhatsApp que abre a conversa) e observações por cliente ficaram para o futuro. O faturamento dos relatórios é estimado a partir do valor cobrado de cada agendamento (não há controle de pagamento).
 - Dependência do frontend com vulnerabilidades moderadas conhecidas (`react-router-dom`); atualização exige mudança de versão maior.
 
 **Trabalhos futuros.** Validação com a profissional e clientes; publicação em nuvem com HTTPS; lembretes automáticos;
-pagamento online; remarcação pelo painel; observações por cliente; verificação de e-mail e recuperação de senha;
+pagamento online; observações por cliente; verificação de e-mail e recuperação de senha;
 adaptação para outros profissionais com horário marcado (barbeiros, manicures, esteticistas).
 
 **Aprendizados do grupo.** **[PREENCHER, 1 parágrafo]**: trabalho em equipe a distância, uso de Git, integração

@@ -10,6 +10,7 @@ const config = { ...base, jwtSecret: 'segredo-de-teste-bem-longo-123', statusIni
 const hoje = agoraNoFuso(config.fusoHorario).data;
 const quarta = proximaData(3, hoje, 2);
 const quinta = proximaData(4, hoje, 2);
+const terca = proximaData(2, hoje, 2); // o seed põe aqui: Ana 10:00-11:00 (Corte) e Juliana 11:30-12:15 (Escova)
 const ontem = new Date(Date.now() - 36 * 3600 * 1000).toISOString().slice(0, 10);
 
 let repo; let srv; let srvPendente; let url; let urlPendente;
@@ -125,4 +126,37 @@ test('remarcar: dois pedidos ao mesmo tempo para o mesmo horário, só um vence'
     j('POST', `/cliente/agendamentos/${a2.id_agendamento}/remarcar`, alvo, carol),
   ]);
   assert.deepEqual(resp.map((x) => x[0]).sort(), [200, 409]);
+});
+
+test('painel: a profissional remarca qualquer agendamento (inclusive de visitante) e o status é mantido', async () => {
+  const [, agenda] = await j('GET', `/admin/agenda?inicio=${terca}&fim=${terca}`, null, admin);
+  const ana = agenda.find((a) => a.cliente === 'Ana Paula');                 // Corte de 60 min, sem conta
+  const [sd, d] = await j('GET', `/admin/agendamentos/${ana.id_agendamento}/disponibilidade?data=${terca}`, null, admin);
+  assert.equal(sd, 200);
+  assert.ok(d.horarios.includes('10:00') && d.horarios.includes('10:30'));   // o próprio horário não bloqueia
+
+  const [s, r] = await j('POST', `/admin/agendamentos/${ana.id_agendamento}/remarcar`, { data: terca, hora_inicio: '10:30' }, admin);
+  assert.equal(s, 200);
+  assert.deepEqual([r.hora_inicio, r.hora_fim, r.status], ['10:30', '11:30', 'CONFIRMADO']);
+  assert.equal((await j('POST', `/admin/agendamentos/${ana.id_agendamento}/remarcar`, { data: terca, hora_inicio: '11:00' }, admin))[0], 409); // invadiria a Juliana (11:30)
+
+  // mesmo com STATUS_INICIAL=PENDENTE (regra da cliente), quando é a profissional que remarca o status não muda
+  const [sp, rp] = await jp('POST', `/admin/agendamentos/${ana.id_agendamento}/remarcar`, { data: terca, hora_inicio: '10:00' }, admin);
+  assert.equal(sp, 200);
+  assert.equal(rp.status, 'CONFIRMADO');
+});
+
+test('painel: remarcar valida dados, recusa cancelado, id inexistente e exige login de profissional', async () => {
+  const [, ag] = await j('POST', '/agendamentos', { id_servico: 4, data: quinta, hora_inicio: '09:00' }, bia);
+  const url_ = `/admin/agendamentos/${ag.id_agendamento}/remarcar`;
+  assert.equal((await j('POST', url_, { data: quinta, hora_inicio: '09:00' }, admin))[0], 400);   // igual ao atual
+  assert.equal((await j('POST', url_, { data: 'x', hora_inicio: '09:30' }, admin))[0], 400);
+  assert.equal((await j('POST', url_, { data: quinta, hora_inicio: '09:30' }))[0], 401);          // sem login
+  assert.equal((await j('POST', url_, { data: quinta, hora_inicio: '09:30' }, bia))[0], 403);     // token de cliente
+  assert.equal((await j('POST', '/admin/agendamentos/99999/remarcar', { data: quinta, hora_inicio: '09:30' }, admin))[0], 404);
+  assert.equal((await j('GET', `/admin/agendamentos/${ag.id_agendamento}/disponibilidade`, null, admin))[0], 400); // sem data
+
+  assert.equal((await j('PATCH', `/admin/agendamentos/${ag.id_agendamento}`, { status: 'CANCELADO' }, admin))[0], 200);
+  assert.equal((await j('POST', url_, { data: quinta, hora_inicio: '09:30' }, admin))[0], 409);   // cancelado
+  assert.equal((await j('GET', `/admin/agendamentos/${ag.id_agendamento}/disponibilidade?data=${quinta}`, null, admin))[0], 409);
 });

@@ -2,6 +2,7 @@
 import { Router } from 'express';
 import { agoraNoFuso, dataValida, horaValida } from '../datas.js';
 import { gerarRelatorio, resumirClientes } from '../relatorios.js';
+import { horariosParaRemarcar, remarcarAgendamento } from '../remarcar.js';
 import { paraMinutos } from '../slots.js';
 
 const texto = (v, max) => String(v ?? '').trim().slice(0, max);
@@ -59,6 +60,29 @@ export function rotasPainel(repo, config) {
           && (a.data_agendamento > hoje || (a.data_agendamento === hoje && paraMinutos(a.hora_fim) > agora.minutos)))
         .slice(0, 6),
     });
+  });
+
+  // ===== Remarcar pelo painel (mesmas regras de horário da reserva; o status é mantido) =====
+  const meu = (req) => (a) => a.id_profissional === prof(req);
+
+  r.get('/agendamentos/:id/disponibilidade', async (req, res) => {
+    const { data } = req.query;
+    if (!Number.isInteger(idDe(req)) || !dataValida(data)) return bad(res, ['informe "data" (AAAA-MM-DD)']);
+    const a = await repo.obterAgendamentoParaRemarcar(idDe(req));
+    if (!a || !meu(req)(a)) return naoEncontrado(res, 'Agendamento');
+    const r2 = await horariosParaRemarcar(repo, config, a, data);
+    res.status(r2.status).json(r2.corpo);
+  });
+
+  r.post('/agendamentos/:id/remarcar', async (req, res) => {
+    const { data, hora_inicio } = req.body ?? {};
+    const erros = [];
+    if (!Number.isInteger(idDe(req))) erros.push('agendamento inválido');
+    if (!dataValida(data)) erros.push('data inválida (AAAA-MM-DD)');
+    if (!horaValida(hora_inicio)) erros.push('hora_inicio inválida (HH:MM)');
+    if (erros.length) return bad(res, erros);
+    const r2 = await remarcarAgendamento(repo, config, { id: idDe(req), pertence: meu(req), data, hora_inicio, statusNovo: (a) => a.status });
+    res.status(r2.status).json(r2.corpo);
   });
 
   // ===== Clientes (quem já agendou com a profissional) =====

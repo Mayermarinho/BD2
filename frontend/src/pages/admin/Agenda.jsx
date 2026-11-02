@@ -2,7 +2,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { api } from '../../api.js';
 import { useAuth } from '../../auth.jsx';
 import { Mensagens } from '../../components.jsx';
-import { DIAS_CURTOS, dataExtenso, dataMuitoCurta, diaDaSemana, hojeSP, inicioDaSemana, linkWhatsApp, moeda, somarDias } from '../../utils.js';
+import Remarcar from '../../remarcar.jsx';
+import { DIAS_CURTOS, dataCurta, dataExtenso, dataMuitoCurta, diaDaSemana, hojeSP, inicioDaSemana, linkWhatsApp, moeda, somarDias } from '../../utils.js';
 
 const ROTULO = { PENDENTE: 'Pendente', CONFIRMADO: 'Confirmado', CONCLUIDO: 'Concluído', CANCELADO: 'Cancelado' };
 
@@ -15,6 +16,8 @@ export default function Agenda() {
   const [aviso, setAviso] = useState('');
   const [cancelando, setCancelando] = useState(null);
   const [motivo, setMotivo] = useState('');
+  const [remarcando, setRemarcando] = useState(null);
+  const [avisarZap, setAvisarZap] = useState(null);   // depois de remarcar: link para avisar a cliente
   const ultima = useRef(0);
 
   const inicio = modo === 'semana' ? inicioDaSemana(data) : data;
@@ -35,8 +38,22 @@ export default function Agenda() {
 
   useEffect(() => { setItens(null); carregar(); }, [carregar]);
 
+  const buscarHorarios = useCallback((id, d) => api.admin(sessao.token).horariosParaRemarcar(id, d), [sessao.token]);
+  const remarcarApi = (id, d, hora) => api.admin(sessao.token).remarcar(id, d, hora);
+
+  async function aoRemarcar(a, r) {
+    setRemarcando(null); setErro('');
+    setAviso(`Agendamento de ${a.cliente} remarcado para ${dataCurta(r.data_agendamento)} às ${r.hora_inicio}.`);
+    setAvisarZap({
+      nome: a.cliente,
+      link: linkWhatsApp(a.telefone_cliente,
+        `Olá, ${a.cliente.split(' ')[0]}! Precisei remarcar o seu horário (${a.servico}) para ${dataCurta(r.data_agendamento)} às ${r.hora_inicio}. Tudo bem para você?`),
+    });
+    await carregar();
+  }
+
   async function mudar(id, status, mot) {
-    setErro(''); setAviso('');
+    setErro(''); setAviso(''); setAvisarZap(null);
     try {
       await api.admin(sessao.token).mudarStatus(id, status, mot);
       setAviso(`Agendamento ${ROTULO[status].toLowerCase()}.`);
@@ -75,6 +92,9 @@ export default function Agenda() {
       </p>
 
       <Mensagens erro={erro} ok={aviso} />
+      {avisarZap && (
+        <p><a className="btn" href={avisarZap.link} target="_blank" rel="noreferrer">Avisar {avisarZap.nome} pelo WhatsApp</a></p>
+      )}
       {itens === null && <p>Carregando…</p>}
 
       {modo === 'semana' && itens && (
@@ -129,10 +149,14 @@ export default function Agenda() {
                         <button type="button" className="btn" onClick={() => setCancelando(null)}>Voltar</button>
                       </div>
                     </form>
+                  ) : remarcando === a.id_agendamento ? (
+                    <Remarcar a={a} buscarHorarios={buscarHorarios} remarcar={remarcarApi}
+                      onFechar={() => setRemarcando(null)} onRemarcado={(r) => aoRemarcar(a, r)} />
                   ) : (
                     <div className="acoes acoes--linha">
                       {a.status === 'PENDENTE' && <button type="button" className="btn btn--primario" onClick={() => mudar(a.id_agendamento, 'CONFIRMADO')}>Confirmar</button>}
                       {a.status === 'CONFIRMADO' && <button type="button" className="btn btn--primario" onClick={() => mudar(a.id_agendamento, 'CONCLUIDO')}>Concluir</button>}
+                      {['PENDENTE', 'CONFIRMADO'].includes(a.status) && <button type="button" className="btn" aria-label={`Remarcar ${a.cliente}`} onClick={() => { setRemarcando(a.id_agendamento); setAvisarZap(null); setAviso(''); }}>Remarcar</button>}
                       {['PENDENTE', 'CONFIRMADO'].includes(a.status) && <button type="button" className="btn" onClick={() => { setCancelando(a.id_agendamento); setMotivo(''); }}>Cancelar</button>}
                     </div>
                   )}

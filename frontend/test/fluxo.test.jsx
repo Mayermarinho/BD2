@@ -389,3 +389,30 @@ describe('painel: clientes e relatórios', () => {
     expect(screen.getByRole('button', { name: /Baixar lista/ })).toBeInTheDocument();
   });
 });
+
+describe('remarcar pelo painel da profissional', () => {
+  it('remarca um agendamento da agenda e oferece o aviso pelo WhatsApp', async () => {
+    const user = userEvent.setup();
+    const dia = proximaData(3, hojeSP(), 2); // quarta
+    await chamarApi('POST', '/agendamentos', { id_servico: 2, data: dia, hora_inicio: '16:00', cliente: { nome: 'Paula Visitante', telefone: '18977776666' } }); // Escova, 45 min
+    await entrar(user, '/admin');
+    const menu = await screen.findByRole('navigation', { name: 'Painel da profissional' });
+    await user.click(within(menu).getByRole('link', { name: /Agenda/ }));
+    fireEvent.change(await screen.findByLabelText('Data'), { target: { value: dia } });
+
+    const cartao = (await screen.findByText('Paula Visitante')).closest('li');
+    expect(within(cartao).getByText('16:00')).toBeInTheDocument();
+    await user.click(within(cartao).getByRole('button', { name: 'Remarcar Paula Visitante' }));
+    fireEvent.change(await within(cartao).findByLabelText('Nova data'), { target: { value: dia } });
+    const grupo = await within(cartao).findByRole('group', { name: 'Horários disponíveis' });
+    expect(within(grupo).queryByLabelText('16:00')).toBeNull();           // horário atual
+    await user.click(within(grupo).getByLabelText('16:30'));              // 16:30-17:15 só sobrepõe ao próprio
+    await user.click(within(cartao).getByRole('button', { name: 'Confirmar nova data' }));
+
+    expect(await screen.findByText(/Agendamento de Paula Visitante remarcado para .* às 16:30/)).toBeInTheDocument();
+    const zap = screen.getByRole('link', { name: 'Avisar Paula Visitante pelo WhatsApp' });
+    expect(zap.getAttribute('href')).toMatch(/^https:\/\/wa\.me\/55\d+\?text=/);
+    expect(decodeURIComponent(zap.getAttribute('href'))).toMatch(/16:30/);
+    await waitFor(() => expect(within(screen.getByText('Paula Visitante').closest('li')).getByText('16:30')).toBeInTheDocument());
+  });
+});

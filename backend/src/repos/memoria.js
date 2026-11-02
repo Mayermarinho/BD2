@@ -113,12 +113,14 @@ export function criarRepoMemoria({ fuso = 'America/Sao_Paulo' } = {}) {
       Object.assign(a, { status: 'CANCELADO', motivo_cancelamento: motivo, data_cancelamento: new Date().toISOString() });
       return true;
     },
-    async obterAgendamentoDoCliente(id, idCliente) {
-      const a = db.agendamentos.find((x) => x.id_agendamento === id && x.id_cliente === idCliente);
+    async obterAgendamentoParaRemarcar(id) {
+      const a = db.agendamentos.find((x) => x.id_agendamento === id);
       if (!a) return null;
       const s = db.servicos.find((x) => x.id_servico === a.id_servico);
-      return { id_agendamento: a.id_agendamento, id_profissional: a.id_profissional, id_servico: a.id_servico, data_agendamento: a.data_agendamento,
-        hora_inicio: a.hora_inicio, hora_fim: a.hora_fim, status: a.status, servico: s.nome, duracao_minutos: s.duracao_minutos, ativo: s.ativo };
+      const c = db.clientes.find((x) => x.id_cliente === a.id_cliente);
+      return { id_agendamento: a.id_agendamento, id_cliente: a.id_cliente, id_profissional: a.id_profissional, id_servico: a.id_servico,
+        data_agendamento: a.data_agendamento, hora_inicio: a.hora_inicio, hora_fim: a.hora_fim, status: a.status, servico: s.nome,
+        duracao_minutos: s.duracao_minutos, ativo: s.ativo, cliente: c.nome, telefone_cliente: c.telefone };
     },
     async buscarUsuarioPorEmail(email) { return db.usuarios.find((u) => u.email.toLowerCase() === email) ?? null; },
     async agendaDoPeriodo(idProf, ini, fim) {

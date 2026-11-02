@@ -44,6 +44,8 @@ export const api = {
     cliente: (id) => req(`/admin/clientes/${id}`, { token }),
     relatorio: (inicio, fim) => req(`/admin/relatorios?inicio=${inicio}&fim=${fim}`, { token }),
     agenda: (inicio, fim) => req(`/admin/agenda?inicio=${inicio}&fim=${fim}`, { token }),
+    horariosParaRemarcar: (id, data) => req(`/admin/agendamentos/${id}/disponibilidade?data=${data}`, { token }),
+    remarcar: (id, data, hora_inicio) => req(`/admin/agendamentos/${id}/remarcar`, { method: 'POST', corpo: { data, hora_inicio }, token }),
     mudarStatus: (id, status, motivo) => req(`/admin/agendamentos/${id}`, { method: 'PATCH', corpo: { status, motivo_cancelamento: motivo }, token }),
     servicos: () => req('/admin/servicos', { token }),
     salvarServico: (dados, id) => req(id ? `/admin/servicos/${id}` : '/admin/servicos', { method: id ? 'PUT' : 'POST', corpo: dados, token }),

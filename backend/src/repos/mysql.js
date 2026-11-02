@@ -98,14 +98,15 @@ function consultas(ex) {
       return r[0].affectedRows > 0;
     },
 
-    // Remarcar: dados do agendamento da própria conta (com a duração do serviço)
-    async obterAgendamentoDoCliente(id, idCliente) {
+    // Remarcar: dados do agendamento (com a duração do serviço). Quem chama confere se tem direito a ele.
+    async obterAgendamentoParaRemarcar(id) {
       const rows = await q(
-        `SELECT a.id_agendamento, a.id_profissional, a.id_servico, a.data_agendamento,
+        `SELECT a.id_agendamento, a.id_cliente, a.id_profissional, a.id_servico, a.data_agendamento,
                 ${HORA('a.hora_inicio')} AS hora_inicio, ${HORA('a.hora_fim')} AS hora_fim, a.status,
-                s.nome AS servico, s.duracao_minutos, s.ativo
+                s.nome AS servico, s.duracao_minutos, s.ativo, c.nome AS cliente, c.telefone AS telefone_cliente
            FROM agendamento a JOIN servico s ON s.id_servico = a.id_servico
-          WHERE a.id_agendamento = ? AND a.id_cliente = ?`, [id, idCliente]);
+           JOIN cliente c ON c.id_cliente = a.id_cliente
+          WHERE a.id_agendamento = ?`, [id]);
       return rows[0] ? { ...rows[0], ativo: Boolean(rows[0].ativo) } : null;
     },
 

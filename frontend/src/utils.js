@@ -39,9 +39,9 @@ export function mascararTelefone(valor) {
 
 export const soDigitos = (t) => String(t ?? '').replace(/\D/g, '');
 
-export const linkWhatsApp = (telefone) => {
+export const linkWhatsApp = (telefone, texto) => {
   const n = soDigitos(telefone);
-  return `https://wa.me/${n.startsWith('55') ? n : `55${n}`}`;
+  return `https://wa.me/${n.startsWith('55') ? n : `55${n}`}${texto ? `?text=${encodeURIComponent(texto)}` : ''}`;
 };
 
 export const DIAS_SEMANA = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
