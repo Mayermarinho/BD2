@@ -46,7 +46,7 @@ O sistema **não depende** do Workbench: a API só precisa do MySQL Server e da 
    ```
    Devem aparecer **2 linhas**: `trg_impede_conflito_horario` e `trg_impede_conflito_horario_update`.
    Se não aparecerem, selecione só o bloco do trigger (de `DELIMITER $$` até `DELIMITER ;`) e execute com Alt + X, ou rode o script pelo Workbench de outro integrante.
-7. Para testar o conflito (Teste 2 do Parcial), execute um `INSERT` de agendamento em horário já ocupado: o DBeaver mostra o erro `SQL Error [1644] [45000]: ERRO: Conflito de horário!...`. Tire print.
+7. Para testar o conflito (Teste 2 do Parcial), abra `database\\mysql\\testes\\teste_trigger.sql` e execute **um comando por vez** (Ctrl + Enter), conforme os comentários. Os erros `SQL Error [1644] [45000]: ERRO: Conflito de horário!...` são o resultado esperado da parte A. Tire print.
 8. **Diagrama (DER):** clique com o botão direito no banco `sistema_agendamento` > **Ver Diagrama** (*View Diagram*). Para salvar a imagem: botão direito no diagrama > *Save as image*. Se trocar a ferramenta, cite no relatório qual gerou o DER.
 
 O resto do passo a passo não muda (`.env`, `npm run verificar`, `iniciar.bat`).
