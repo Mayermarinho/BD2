@@ -6,12 +6,12 @@
 
 | Dia | O que fazer |
 |---|---|
-| **Seg 02 a ter 03** | Rodar `npm run verificar` no MySQL real (seção 3) e anexar `resultado-verificacao.txt`. Refazer o Teste 3 do Parcial com print. Combinar a sessão com a profissional. |
-| **Ter 03 a qua 04** | Sessão de validação com a profissional (seção 6.5) e testes rápidos de acessibilidade/celular (6.3). Registrar com prints. |
+| **Seg 02 a ter 03** | Rodar `npm run verificar` no MySQL real (seção 3) e anexar `resultado-verificacao.txt`. Refazer o Teste 3 do Parcial com print. |
+| **Ter 03 a qua 04** | Repetir os testes funcionais (seção 6.1) e de integração (6.2) e registrar com prints. |
 | **Qua 04 a qui 05** | Gravar o vídeo (roteiro na seção 8.2, usando o `npm run demo` ou o banco real) e fechar o texto do Relatório Final. |
 | **Qui 05 a sex 06** | Revisão coletiva e **entrega em 06/11** (Samara). |
 
-O que **não** entra agora e vai para "trabalhos futuros" no relatório: remarcar horário, clientes e relatórios no painel, lembretes por WhatsApp, app nativo e publicação na nuvem.
+O que **não** entra agora e vai para "trabalhos futuros" no relatório: remarcar horário e clientes/relatórios no painel.
  Datas e responsáveis seguem o
 > [Plano de Ação](../PLANO%20DE%20A%C3%87%C3%83O%20GRUPO%204.pdf). Onde o Plano não diz quem faz algo novo, está
 > marcado como **sugestão**: o grupo decide.
@@ -31,9 +31,8 @@ agenda, serviços, horários e folgas) e regra anti-conflito de horário.
 |---|---|---|---|
 | **21/10 a 24/10** (sugestão) | **A. Validar no MySQL real** | Roteiro da seção 3 cumprido e resultados registrados | Mayer e Samara (integração) + Todos (testes preliminares) |
 | **22/10 a 27/10** (sugestão; depois disso, **congelar** novas funções) | **B. Fechar o que falta do sistema** | Clientes, relatórios e remarcar (seção 4); decisões em aberto (seção 5) | Edinaldo e Lucas (serviços); Amanda e Marcela (agendamento); Mayer e Nicolas (acessibilidade) |
-| **25/10 a 01/11** | **C. Testes e validação** (a Quinzena 6 já começou: ir testando enquanto B termina) | Testes funcionais, integração, acessibilidade; validação com a profissional (seção 6) | Edinaldo e Lucas; Nicolas; Amanda e Marcela; Mayer e Samara; Todos |
-| **02/11 a 06/11** | **D. Vídeo e Relatório Final** | Vídeo e relatório entregues em **06/11** (seção 8) | Amanda e Marcela (roteiro); Samara (relatório e entrega); Todos (revisão) |
-| Opcional | **E. Publicar na internet** | Site no ar com endereço (seção 7) | sugestão: Mayer e Nicolas |
+| **25/10 a 01/11** | **C. Testes e validação** (a Quinzena 6 já começou: ir testando enquanto B termina) | Testes funcionais e de integração (seção 6) | Edinaldo e Lucas; Nicolas; Amanda e Marcela; Mayer e Samara; Todos |
+| **02/11 a 06/11** | **D. Vídeo e Relatório Final** | Vídeo e relatório entregues em **06/11** (seção 7) | Amanda e Marcela (roteiro); Samara (relatório e entrega); Todos (revisão) |
 
 ---
 
@@ -135,7 +134,7 @@ servem de evidência no Relatório Final.
 
 ## 4. Etapa B: o que falta construir (até 27/10, depois congelar)
 
-> **Prazo curto:** restam ~11 dias da Quinzena 6. Por isso, a ordem abaixo já considera cortar: **remarcar** e **WhatsApp** podem virar "trabalhos futuros" no Relatório Final se o tempo apertar. Clientes e relatórios (itens 2 e 3) são o mínimo útil para a profissional.
+> **Prazo curto:** a ordem abaixo já considera cortar: **remarcar** pode virar "trabalhos futuros" no Relatório Final se o tempo apertar. Clientes e relatórios (itens 2 e 3) são o mínimo útil para a profissional.
 
 Em ordem de prioridade (as duas primeiras são as que mais pesam para a profissional):
 
@@ -144,11 +143,9 @@ Em ordem de prioridade (as duas primeiras são as que mais pesam para a profissi
 | 1 | **Remarcar horário** | Cliente (com conta) e profissional trocam data/hora de um agendamento, respeitando conflitos | ⏳ a construir |
 | 2 | **Painel: clientes** | Lista com busca por nome/telefone, histórico de cada cliente, observações | ⏳ a construir |
 | 3 | **Painel: relatórios** | Agendamentos por período, serviços mais pedidos, cancelamentos e faturamento estimado (usa `preco_cobrado`) | ⏳ a construir |
-| 4 | **Acessibilidade e celular** | Itens da seção 6.3, corrigindo o que a auditoria apontar | ⏳ |
-| 5 | **Atualizar o `react-router-dom`** | O `npm audit` aponta 2 avisos moderados nessa biblioteca; atualizar e rodar os testes | ⏳ antes de publicar |
-| 6 | **Lembretes por WhatsApp** | Hoje só há um link `wa.me`. Automático exige API paga: deixar como melhoria futura no relatório | ⏳ opcional |
+| 4 | **Atualizar o `react-router-dom`** | O `npm audit` aponta 2 avisos moderados nessa biblioteca; atualizar e rodar os testes | ⏳ recomendado |
 
-> Eu (Arena) implemento 1, 2, 3 e 5 em etapas, com testes a cada uma. Para começar, diga **"pode começar a Etapa 3"**
+> Eu (Arena) implemento 1, 2, 3 e 4 em etapas, com testes a cada uma. Para começar, diga **"pode começar a Etapa 3"**
 > e eu faço na ordem acima. Se a profissional preferir outra ordem, avise.
 
 ---
@@ -189,58 +186,14 @@ Para cada erro, abrir uma *issue* no GitHub com print e passos para repetir.
 - Conferir no Workbench se o que aparece no site bate com o que está nas tabelas.
 - Rodar `npm test` em `backend` e `frontend`: tudo verde antes de cada entrega.
 
-### 6.3 Acessibilidade, usabilidade e responsividade (Amanda e Marcela)
-
-| Teste | Como fazer | Meta |
-|---|---|---|
-| Teclado | Navegar só com Tab, Enter e Esc (sem mouse) | Dá para agendar do início ao fim; o foco aparece sempre |
-| Leitor de tela | NVDA (gratuito, Windows) ou TalkBack (Android) | Botões e campos têm nome; erros são lidos |
-| Contraste | Extensão **WAVE** ou **axe DevTools** no navegador | Sem erros de contraste |
-| Lighthouse | F12, aba Lighthouse, categoria Acessibilidade | Nota 90 ou mais |
-| Zoom | Ampliar para 200% | Nada some nem fica cortado |
-| Celular | Testar com larguras de 360, 390 e 768 px (F12, modo dispositivo) e em celular real | Sem rolagem lateral; botões fáceis de tocar |
-| Usabilidade | Pedir a 3 a 5 pessoas (incluindo a profissional) que agendem sem ajuda; anotar onde travam e quanto tempo levam | Registrar problemas e correções |
-
-Registrar os resultados com prints: viram a seção de acessibilidade e usabilidade do Relatório Final.
-(No Parcial, a usabilidade foi avaliada só com o DER. Agora há um sistema de verdade para testar.)
-
-### 6.4 Correções (Mayer e Samara)
+### 6.3 Correções (Mayer e Samara)
 Corrigir o que as issues apontarem, na ordem: erros que impedem agendar, depois dados errados, depois visual.
 
-### 6.5 Validação com a profissional (Todos, até 01/11)
-Sessão de 30 a 40 minutos, de preferência em um computador e um celular dela:
-
-1. Ela mesma agenda um horário (sem ajuda) e cancela.
-2. Ela entra no painel, cadastra um serviço, define horários e uma folga.
-3. Ela vê a agenda do dia e muda o status de um agendamento.
-4. Perguntas: o que falta? O que confunde? Usaria no dia a dia? Os textos e preços estão certos?
-5. Registrar as respostas e **a data**. Se possível, pedir um depoimento curto ou ata assinada/enviada por mensagem.
-
 ---
 
-## 7. Etapa E: publicar na internet (opcional)
+## 7. Etapa D: Vídeo e Relatório Final (02/11 a 06/11)
 
-Só faz sentido depois da Etapa A. Para o projeto, o sistema rodando no computador do grupo já atende, mas ter um
-endereço público facilita a validação com a profissional e o vídeo.
-
-**Estrutura típica:** site (arquivos estáticos do `npm run build`), API Node e banco MySQL, cada um em um serviço.
-Existem serviços com plano gratuito para cada parte (confira condições e limites atuais antes de escolher: mudam com frequência).
-
-**Checklist antes de publicar:**
-- [ ] `JWT_SECRET` novo e forte (diferente do de desenvolvimento).
-- [ ] **Não** executar `03_dev_admin.sql`; criar a administradora real com senha forte (e trocar a `admin123`).
-- [ ] `CORS_ORIGIN` com o endereço real do site; `DB_SSL` conforme o provedor; só HTTPS.
-- [ ] Atualizar `react-router-dom` e rodar `npm audit` no backend e frontend.
-- [ ] Trocar as fotos ilustrativas por fotos reais do salão (e comprimir: cada JPG tem ~200 KB).
-- [ ] Nome, contatos, endereço e horários reais em `frontend/src/marca.js`.
-- [ ] **LGPD:** o sistema guarda nome, telefone e e-mail. Incluir um aviso curto de privacidade (para que os dados são usados, quem acessa, como pedir exclusão) e o consentimento no cadastro.
-- [ ] Senha que já apareceu em conversa (`admin123admin`) **deve ser trocada**.
-
----
-
-## 8. Etapa D: Vídeo e Relatório Final (02/11 a 06/11)
-
-### 8.1 Relatório Final (Samara, com revisão de todos)
+### 7.1 Relatório Final (Samara, com revisão de todos)
 Reaproveitar o `docs/REVISAO_RELATORIO_PARCIAL.md`, que lista o que corrigir em relação ao Parcial:
 
 - Banco: PostgreSQL no Plano, **MySQL** no sistema (justificar).
@@ -248,25 +201,25 @@ Reaproveitar o `docs/REVISAO_RELATORIO_PARCIAL.md`, que lista o que corrigir em 
 - "Pagamentos": explicar que só se registra o valor cobrado.
 - A estatística de "80% dos conflitos" precisa de fonte ou deve ser reformulada.
 - A prevenção de conflito tem dois níveis (trigger + trava na API); explicar o limite do trigger sozinho.
-- Resultados: testes automatizados (33 + 13), roteiro do MySQL (seção 3.3), acessibilidade (6.3), validação com a profissional (6.5), prints.
-- Limitações e trabalhos futuros: lembretes automáticos, verificação de e-mail, pagamento online, remarcação (se não ficar pronta).
+- Resultados: testes automatizados (33 + 13), roteiro do MySQL (seção 3.3), prints.
+- Limitações e trabalhos futuros: verificação de e-mail, pagamento online, remarcação (se não ficar pronta).
 - Referências e formatação conforme modelo da UNIVESP/ABNT.
 
-### 8.2 Vídeo (roteiro: Amanda e Marcela)
+### 7.2 Vídeo (roteiro: Amanda e Marcela)
 Sugestão de sequência (5 a 7 minutos, conforme limite do AVA):
 
 1. **Problema:** como a profissional agenda hoje e o que dá errado.
 2. **Solução:** o que o sistema faz (uma frase).
 3. **Demonstração (3 min):** cliente escolhe serviço, agenda, vê confirmação; profissional vê na agenda; tentativa de horário já ocupado.
 4. **Tecnologias:** React, Node/Express, MySQL (um slide).
-5. **Resultados e validação:** testes, acessibilidade, fala/depoimento da profissional.
+5. **Resultados:** testes automatizados e verificação no MySQL real.
 6. **Conclusão e próximos passos.**
 
 Dica: ensaiar com o **modo demo**, que tem dados prontos e não depende do banco, e gravar com o sistema limpo.
 
 ---
 
-## 9. Como o grupo deve trabalhar no repositório
+## 8. Como o grupo deve trabalhar no repositório
 
 - Antes de mexer: `git pull`. Depois: `git add`, `git commit -m "mensagem clara"` e `git push`.
 - A branch de trabalho é `arena/01a0efcc-bd2`. A antiga `main` virou `Arq` e **não deve ser alterada**.
@@ -274,12 +227,10 @@ Dica: ensaiar com o **modo demo**, que tem dados prontos e não depende do banco
 - Erros encontrados: abrir uma *issue* com título curto, passos para repetir, resultado esperado e print.
 - Mudou a regra de negócio ou o banco? Atualizar o `README.md` e o `docs/MODELAGEM.md` no mesmo commit.
 
-## 10. Riscos e como reduzir
+## 9. Riscos e como reduzir
 
 | Risco | Efeito | O que fazer |
 |---|---|---|
 | MySQL real revelar erros no `repos/mysql.js` | Atrasa tudo | Etapa A **agora**; mandar os erros logo |
-| Profissional pedir mudanças tarde | Retrabalho na reta final | Mostrar o sistema a ela **já nesta quinzena** (modo demo) |
 | Pouco tempo na Quinzena 7 | Relatório apressado | Ir escrevendo as seções do relatório durante a Quinzena 6 |
-| Visual de celular só testado em simulador | Surpresas na validação | Testar em celular real na Etapa C |
 | Endereço, telefone e Instagram ainda de exemplo | Dados falsos no vídeo | Trocar em `frontend/src/marca.js` antes de gravar |

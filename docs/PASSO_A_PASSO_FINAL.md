@@ -176,7 +176,7 @@ cloudflared tunnel --url http://localhost:5173
 | 1:45 a 4:00 | Demonstração no PC | Home com serviços → escolher serviço → agendar sem conta → confirmação → tentar o mesmo horário (aparece indisponível) → entrar no painel: dashboard, agenda, serviços, horários e folga |
 | 4:00 a 5:00 | Celular | Instalar o app pelo Chrome, abrir pelo ícone, agendar e mostrar que o agendamento aparece no painel do PC |
 | 5:00 a 5:45 | Banco e testes | Workbench com o agendamento gravado; terminal com `npm run verificar` (tudo OK); testes automatizados |
-| 5:45 a 6:30 | Resultados e fecho | Validação com a profissional, limitações (sem pagamento online, sem lembretes automáticos) e trabalhos futuros; agradecimento |
+| 5:45 a 6:30 | Resultados e fecho | Resultados, limitações (sem pagamento online) e trabalhos futuros; agradecimento |
 
 **Edição e envio:**
 - Junte e corte no **Clipchamp** (já vem no Windows 11) ou no **CapCut**. Exporte em **MP4, 1080p ou 720p**.

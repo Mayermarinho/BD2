@@ -229,8 +229,6 @@ Conforme o Plano de Ação.
 - [x] Painel: CRUD de serviços e categorias
 - [x] Painel: horários de atendimento e folgas
 - [ ] Trocar os dados fictícios pelos serviços, preços e horários reais da profissional
-- [ ] Acessibilidade: testar com teclado, leitor de tela e celular
-- [ ] Publicar na nuvem (API + MySQL + site)
 - [ ] Refazer o DER no Workbench após o `02_melhorias.sql`
 
 ## 11. Decisões em aberto
@@ -245,7 +243,7 @@ Conforme o Plano de Ação.
 ## 12. Documentação
 - [`docs/MODELAGEM.md`](docs/MODELAGEM.md) — modelo de dados, fluxos e telas
 - [`docs/PASSO_A_PASSO_FINAL.md`](docs/PASSO_A_PASSO_FINAL.md) — sistema real (MySQL), instalar no Android e gravar o vídeo
-- [`docs/MOBILE.md`](docs/MOBILE.md) — app no celular (PWA agora; Android e iPhone nativos depois)
+- [`docs/MOBILE.md`](docs/MOBILE.md) — app instalável no celular (PWA)
 - [`docs/PROXIMAS_ETAPAS.md`](docs/PROXIMAS_ETAPAS.md) — roteiro de testes no MySQL, etapas até 06/11 e instruções para o grupo
 - [`docs/REVISAO_RELATORIO_PARCIAL.md`](docs/REVISAO_RELATORIO_PARCIAL.md) — o que ajustar no relatório
 - [`database/mysql/README.md`](database/mysql/README.md) — montar o banco

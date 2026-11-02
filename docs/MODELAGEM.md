@@ -35,8 +35,8 @@
 | 4 | API REST Node/Express | ✅ serviços, disponibilidade, agendamento, cancelamento, login, agenda |
 | 4 | Interface React | ✅ fluxo do cliente + login + agenda da profissional |
 | 5 | CRUD de serviços, horários e folgas (painel) | ⏳ API e telas ainda não existem |
-| 5 | Acessibilidade e responsividade | 🟡 base feita (HTML semântico, foco, rótulos, contraste); falta auditoria |
-| 5–6 | Testes e validação com a profissional | 🟡 testes automatizados feitos; falta validar com a profissional |
+| 5 | Acessibilidade e responsividade | 🟡 base feita (HTML semântico, foco, rótulos, contraste) |
+| 5–6 | Testes | ✅ testes automatizados feitos |
 
 ---
 
@@ -334,7 +334,6 @@ Não exige login (o cliente é identificado pelo telefone).
 - **Back-end:** Node.js + Express, API REST em JSON, `mysql2` com consultas parametrizadas (`backend/`).
 - **Banco:** MySQL 8 (`database/mysql/`).
 - **Segurança:** bcrypt para senhas, JWT de 8 h no painel, `helmet`, CORS configurável e limite de tentativas de login.
-- **Nuvem (tema norteador):** front em hospedagem estática; API e MySQL em serviço que ofereça **MySQL de verdade** (triggers são a regra central).
 - Evolução opcional: PWA.
 
 ### Acessibilidade e responsividade (requisitos do plano, Quinzenas 5 e 6)
@@ -374,9 +373,6 @@ BD2/
 
 1. **Painel:** telas e endpoints de CRUD de serviços/categorias, horários de atendimento e folgas (Edinaldo e Lucas).
 2. **Agendamento/disponibilidade e conflitos:** validar com a profissional o passo (15/30 min), a antecedência mínima e a regra de cancelamento (Amanda e Marcela).
-3. **Integração e nuvem:** publicar API + MySQL + front (Mayer e Samara).
-4. **Acessibilidade e responsividade:** auditoria com leitor de tela, teclado e celular real (Mayer e Nicolas).
-5. **Lembretes por WhatsApp** (melhoria apontada no Relatório Parcial): hoje há apenas o link `wa.me` no painel.
 
 **Decisões em aberto para o grupo:**
 - O cliente agenda já como `CONFIRMADO` ou entra como `PENDENTE` até a profissional aprovar? (`STATUS_INICIAL` no `.env`)
