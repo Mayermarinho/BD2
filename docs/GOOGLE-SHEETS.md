@@ -37,6 +37,10 @@ A integração só é ativada quando as três primeiras variáveis estão config
 
 Execute `database/mysql/06_google_sheets_outbox.sql` depois das migrações anteriores, inclusive `05_notificacoes_push.sql`.
 
+## Verificação pelo painel
+
+Com a conta administrativa autenticada, consulte `GET /api/admin/integracoes/google-sheets/status`. A resposta informa se a integração está habilitada e quantos eventos permanecem pendentes ou com erro.
+
 ## Operação e limitações
 
 - A primeira linha da aba é preenchida automaticamente com os cabeçalhos.
