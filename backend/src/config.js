@@ -15,5 +15,14 @@ export const config = {
   statusInicial: process.env.STATUS_INICIAL === 'PENDENTE' ? 'PENDENTE' : 'CONFIRMADO',
   passoMinutos: int(process.env.PASSO_MINUTOS, 30),
   antecedenciaMinutos: int(process.env.ANTECEDENCIA_MINUTOS, 60),
+  googleSheetsSpreadsheetId: process.env.GOOGLE_SHEETS_SPREADSHEET_ID,
+  googleServiceAccountEmail: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
+  googleServiceAccountPrivateKey: process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY,
+  googleSheetsIntervaloMs: int(process.env.GOOGLE_SHEETS_SYNC_INTERVAL_MS, 30000),
+  googleSheetsHabilitado: Boolean(
+    process.env.GOOGLE_SHEETS_SPREADSHEET_ID
+    && process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL
+    && process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY
+  ),
   fusoHorario: 'America/Sao_Paulo',
 };
