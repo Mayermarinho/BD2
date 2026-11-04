@@ -15,7 +15,7 @@ if (config.modoDemo) {
   repo = criarRepoMysql(criarPool(config.databaseUrl, { ssl: config.dbSsl }));
 }
 
-const pararSincronizacaoSheets = iniciarSincronizacaoSheets(repo, config);
+iniciarSincronizacaoSheets(repo, config);
 const app = criarApp(repo, config);
 
 app.listen(config.port, '0.0.0.0', () => {
