@@ -36,6 +36,14 @@ export function rotasAdmin(repo, config) {
   protegido.use(exigirLogin(config.jwtSecret, 'admin'));
   protegido.use(rotasPainel(repo, config));
 
+  // Estado da fila de sincronização Google Sheets (não expõe credenciais).
+  protegido.get('/integracoes/google-sheets/status', async (req, res) => {
+    const fila = repo.resumoFilaSheets
+      ? await repo.resumoFilaSheets(req.usuario.id_profissional)
+      : { pendentes: 0, com_erro: 0 };
+    res.json({ habilitada: Boolean(config.googleSheetsHabilitado), ...fila });
+  });
+
   // Agenda num período: /api/admin/agenda?inicio=2026-10-05&fim=2026-10-11
   protegido.get('/agenda', async (req, res) => {
     const { inicio, fim = inicio } = req.query;
@@ -57,7 +65,10 @@ export function rotasAdmin(repo, config) {
       return res.status(409).json({ erro: `Não é possível mudar de ${atual} para ${novo}.` });
     }
     const motivo = novo === 'CANCELADO' ? String(req.body?.motivo_cancelamento ?? 'Cancelado pela profissional').slice(0, 255) : null;
-    await repo.atualizarStatus({ id, status: novo, motivo });
+    await repo.transacao(async (tx) => {
+      await tx.atualizarStatus({ id, status: novo, motivo });
+      await tx.registrarEventoSheets?.({ id_profissional: req.usuario.id_profissional, id_agendamento: id });
+    });
     res.json({ ok: true });
   });
 
