@@ -40,6 +40,7 @@ export const api = {
   agenda: (token, inicio, fim) => req(`/admin/agenda?inicio=${inicio}&fim=${fim}`, { token }),
   admin: (token) => ({
     resumo: () => req('/admin/resumo', { token }),
+    integracaoSheets: () => req('/admin/integracoes/google-sheets/status', { token }),
     clientes: (busca = '') => req(`/admin/clientes?busca=${encodeURIComponent(busca)}`, { token }),
     cliente: (id) => req(`/admin/clientes/${id}`, { token }),
     relatorio: (inicio, fim) => req(`/admin/relatorios?inicio=${inicio}&fim=${fim}`, { token }),
