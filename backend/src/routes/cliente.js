@@ -47,7 +47,14 @@ export function rotasCliente(repo, config) {
     const id = Number.parseInt(req.params.id, 10);
     if (!Number.isInteger(id)) return res.status(400).json({ erro: 'Agendamento inválido.' });
     const motivo = String(req.body?.motivo ?? '').slice(0, 255) || 'Cancelado pelo cliente';
-    const ok = await repo.cancelarDoCliente({ id, idCliente: req.usuario.id_cliente, motivo });
+    const ok = await repo.transacao(async (tx) => {
+      const cancelado = await tx.cancelarDoCliente({ id, idCliente: req.usuario.id_cliente, motivo });
+      if (cancelado) {
+        const agendamento = await tx.obterAgendamentoParaRemarcar(id);
+        if (agendamento) await tx.registrarEventoSheets?.({ id_profissional: agendamento.id_profissional, id_agendamento: id });
+      }
+      return cancelado;
+    });
     if (!ok) return res.status(404).json({ erro: 'Agendamento não encontrado ou não pode mais ser cancelado.' });
     res.json({ ok: true });
   });
