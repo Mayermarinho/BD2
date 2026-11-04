@@ -69,6 +69,7 @@ export function rotasPublicas(repo, config) {
         status: config.statusInicial,
         observacao: observacao ? String(observacao).slice(0, 500) : null,
       });
+      await tx.registrarEventoSheets?.({ id_profissional: servico.id_profissional, id_agendamento: agendamento.id_agendamento });
       return { status: 201, corpo: agendamento };
     });
     res.status(resultado.status).json(resultado.corpo);
@@ -81,7 +82,14 @@ export function rotasPublicas(repo, config) {
     const motivo = String(req.body?.motivo ?? '').slice(0, 255) || 'Cancelado pelo cliente';
     if (!Number.isInteger(id) || !telefone) return res.status(400).json({ erro: 'Informe o telefone usado no agendamento.' });
 
-    const ok = await repo.cancelarPeloCliente({ id, telefone, motivo });
+    const ok = await repo.transacao(async (tx) => {
+      const cancelado = await tx.cancelarPeloCliente({ id, telefone, motivo });
+      if (cancelado) {
+        const agendamento = await tx.obterAgendamentoParaRemarcar(id);
+        if (agendamento) await tx.registrarEventoSheets?.({ id_profissional: agendamento.id_profissional, id_agendamento: id });
+      }
+      return cancelado;
+    });
     if (!ok) return res.status(404).json({ erro: 'Agendamento não encontrado ou não pode mais ser cancelado.' });
     res.json({ ok: true });
   });
