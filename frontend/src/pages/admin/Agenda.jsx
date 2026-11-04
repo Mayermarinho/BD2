@@ -18,6 +18,7 @@ export default function Agenda() {
   const [motivo, setMotivo] = useState('');
   const [remarcando, setRemarcando] = useState(null);
   const [avisarZap, setAvisarZap] = useState(null);   // depois de remarcar: link para avisar a cliente
+  const [sheetsStatus, setSheetsStatus] = useState(null);
   const ultima = useRef(0);
 
   const inicio = modo === 'semana' ? inicioDaSemana(data) : data;
@@ -37,6 +38,14 @@ export default function Agenda() {
   }, [inicio, fim, sessao.token, sair]);
 
   useEffect(() => { setItens(null); carregar(); }, [carregar]);
+
+  useEffect(() => {
+    let ativo = true;
+    api.admin(sessao.token).integracaoSheets()
+      .then((status) => { if (ativo) setSheetsStatus(status); })
+      .catch(() => { if (ativo) setSheetsStatus(null); });
+    return () => { ativo = false; };
+  }, [sessao.token]);
 
   const buscarHorarios = useCallback((id, d) => api.admin(sessao.token).horariosParaRemarcar(id, d), [sessao.token]);
   const remarcarApi = (id, d, hora) => api.admin(sessao.token).remarcar(id, d, hora);
@@ -69,6 +78,15 @@ export default function Agenda() {
   return (
     <section aria-labelledby="t">
       <h1 id="t" className="titulo">Agenda</h1>
+      {sheetsStatus && (
+        <p className="muted" role="status">
+          Google Sheets: {sheetsStatus.habilitada
+            ? 'sincronização automática ativa'
+            : 'integração ainda não configurada'}
+          {sheetsStatus.habilitada && ` · ${sheetsStatus.pendentes} pendente(s)`}
+          {sheetsStatus.com_erro > 0 && ` · ${sheetsStatus.com_erro} com erro (nova tentativa automática)`}
+        </p>
+      )}
 
       <div className="barra">
         <div className="segmentado" role="group" aria-label="Visualização">
