@@ -10,9 +10,8 @@ services:
     envVars:
       - key: MODO_DEMO
         value: "true"
-      - key: PORT
-        value: "10000"
       - key: JWT_SECRET
         generateValue: true
       - key: CORS_ORIGIN
         value: "*"
+
