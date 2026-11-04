@@ -18,8 +18,6 @@ if (config.modoDemo) {
 const pararSincronizacaoSheets = iniciarSincronizacaoSheets(repo, config);
 const app = criarApp(repo, config);
 
-process.on('SIGTERM', () => pararSincronizacaoSheets());
-process.on('SIGINT', () => pararSincronizacaoSheets());
 app.listen(config.port, '0.0.0.0', () => {
   console.log(`API no ar: http://localhost:${config.port}/api/saude`);
 });
