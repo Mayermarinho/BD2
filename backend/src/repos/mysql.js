@@ -368,7 +368,6 @@ function consultas(ex) {
         `SELECT id_agendamento, data_agendamento, ${HORA('hora_inicio')} AS hora_inicio,
                 ${HORA('hora_fim')} AS hora_fim, status, preco_cobrado
            FROM agendamento WHERE id_agendamento = ?`, [id]);
-      await this.registrarEventoSheets({ id_profissional: a.id_profissional, id_agendamento: id });
       return rows[0];
     },
   };
