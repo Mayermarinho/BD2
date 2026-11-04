@@ -44,7 +44,7 @@ Com a conta administrativa autenticada, consulte `GET /api/admin/integracoes/goo
 ## Operação e limitações
 
 - A primeira linha da aba é preenchida automaticamente com os cabeçalhos.
-- O worker processa até 20 eventos por ciclo.
+- O worker processa até 20 eventos por ciclo e foi projetado para uma única instância do backend; antes de escalar horizontalmente, será necessário adicionar um mecanismo de bloqueio distribuído para impedir dois workers de incluírem a mesma linha simultaneamente.
 - A planilha é uma projeção de consulta; não edite seus dados esperando que sejam gravados de volta no MySQL.
 - Para evitar duplicidade, o ID do agendamento é a chave de correspondência.
 - Se a planilha ou a aba for removida/renomeada, a fila continuará tentando até a configuração ser corrigida.
