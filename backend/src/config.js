@@ -18,7 +18,7 @@ export const config = {
   googleSheetsSpreadsheetId: process.env.GOOGLE_SHEETS_SPREADSHEET_ID,
   googleServiceAccountEmail: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
   googleServiceAccountPrivateKey: process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY,
-  googleSheetsIntervaloMs: int(process.env.GOOGLE_SHEETS_SYNC_INTERVAL_MS, 30000),
+  googleSheetsIntervaloMs: Math.max(5000, int(process.env.GOOGLE_SHEETS_SYNC_INTERVAL_MS, 30000)),
   googleSheetsHabilitado: Boolean(
     process.env.GOOGLE_SHEETS_SPREADSHEET_ID
     && process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL
