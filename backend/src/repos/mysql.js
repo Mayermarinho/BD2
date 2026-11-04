@@ -17,6 +17,35 @@ function consultas(ex) {
   return {
     async ping() { await q('SELECT 1'); },
 
+    // ===== Integração Google Sheets: outbox transacional =====
+    async registrarEventoSheets({ id_profissional, id_agendamento }) {
+      await q('INSERT INTO integracao_sheets_outbox (id_profissional, id_agendamento) VALUES (?, ?)', [id_profissional, id_agendamento]);
+    },
+
+    listarEventosSheetsPendentes: (limite = 20) => q(
+      "SELECT id_evento, id_profissional, id_agendamento FROM integracao_sheets_outbox WHERE status = 'PENDENTE' AND proxima_tentativa <= NOW() ORDER BY id_evento LIMIT ?",
+      [limite]),
+
+    async obterAgendamentoParaSheets(id, idProfissional) {
+      const rows = await q(
+        "SELECT a.id_agendamento, DATE_FORMAT(a.data_agendamento, '%Y-%m-%d') AS data_agendamento, TIME_FORMAT(a.hora_inicio, '%H:%i') AS hora_inicio, TIME_FORMAT(a.hora_fim, '%H:%i') AS hora_fim, c.nome AS cliente, s.nome AS servico, p.nome AS profissional, COALESCE(a.preco_cobrado, s.preco) AS preco, a.status FROM agendamento a JOIN cliente c ON c.id_cliente = a.id_cliente JOIN servico s ON s.id_servico = a.id_servico JOIN profissional p ON p.id_profissional = a.id_profissional WHERE a.id_agendamento = ? AND a.id_profissional = ?",
+        [id, idProfissional]);
+      return rows[0] ?? null;
+    },
+
+    async marcarEventoSheetsEnviado(idEvento) {
+      await q("UPDATE integracao_sheets_outbox SET status = 'ENVIADO', enviado_em = NOW(), ultimo_erro = NULL WHERE id_evento = ?", [idEvento]);
+    },
+
+    async registrarFalhaEventoSheets(idEvento, erro) {
+      await q("UPDATE integracao_sheets_outbox SET tentativas = tentativas + 1, ultimo_erro = ?, proxima_tentativa = DATE_ADD(NOW(), INTERVAL LEAST(360, POW(2, tentativas + 1)) MINUTE) WHERE id_evento = ? AND status = 'PENDENTE'", [erro, idEvento]);
+    },
+
+    async resumoFilaSheets(idProfissional) {
+      const rows = await q("SELECT COUNT(*) AS total_pendente, SUM(ultimo_erro IS NOT NULL) AS com_erro FROM integracao_sheets_outbox WHERE id_profissional = ? AND status = 'PENDENTE'", [idProfissional]);
+      return { pendentes: Number(rows[0]?.total_pendente || 0), com_erro: Number(rows[0]?.com_erro || 0) };
+    },
+
     listarServicos: () => q(
       `SELECT s.id_servico, s.nome, s.descricao, s.preco, s.duracao_minutos,
               c.id_categoria, c.nome AS categoria
@@ -339,6 +368,7 @@ function consultas(ex) {
         `SELECT id_agendamento, data_agendamento, ${HORA('hora_inicio')} AS hora_inicio,
                 ${HORA('hora_fim')} AS hora_fim, status, preco_cobrado
            FROM agendamento WHERE id_agendamento = ?`, [id]);
+      await this.registrarEventoSheets({ id_profissional: a.id_profissional, id_agendamento: id });
       return rows[0];
     },
   };
