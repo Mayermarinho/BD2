@@ -41,6 +41,7 @@ export async function remarcarAgendamento(repo, config, { id, pertence, data, ho
     const atualizado = await tx.remarcarAgendamento({
       id, data, hora_inicio, hora_fim: somarMinutos(hora_inicio, a.duracao_minutos), status: statusNovo(a),
     });
+    await tx.registrarEventoSheets?.({ id_profissional: a.id_profissional, id_agendamento: id });
     return { status: 200, corpo: { ...atualizado, anterior: { data_agendamento: a.data_agendamento, hora_inicio: a.hora_inicio } } };
   });
 }
