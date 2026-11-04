@@ -21,7 +21,11 @@ export function iniciarSincronizacaoSheets(repo, config) {
           await repo.marcarEventoSheetsEnviado(evento.id_evento);
         } catch (erro) {
           console.error('Google Sheets: falha no evento ' + evento.id_evento + ':', erro.message);
-          await repo.registrarFalhaEventoSheets(evento.id_evento, erro.message.slice(0, 2000));
+          try {
+            await repo.registrarFalhaEventoSheets(evento.id_evento, erro.message.slice(0, 2000));
+          } catch (erroFila) {
+            console.error('Google Sheets: não foi possível registrar a falha na fila:', erroFila.message);
+          }
         }
       }
     } catch (erro) {
