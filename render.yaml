@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: bd2-demo
+    runtime: docker
+    plan: free
+    branch: feature/pwa-notificacoes-agenda
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /api/saude
+    envVars:
+      - key: MODO_DEMO
+        value: "true"
+      - key: PORT
+        value: "10000"
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CORS_ORIGIN
+        value: "*"
