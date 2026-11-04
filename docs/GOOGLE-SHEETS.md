@@ -28,7 +28,7 @@ Configure no servidor (não no GitHub nem no navegador):
 
 - `GOOGLE_SHEETS_SPREADSHEET_ID`: ID da planilha.
 - `GOOGLE_SERVICE_ACCOUNT_EMAIL`: campo `client_email` do JSON da conta de serviço.
-- `GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY`: campo `private_key` do JSON. Em plataformas que não preservam quebras de linha, use `\\n` no lugar das quebras.
+- `GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY`: campo `private_key` do JSON. Em plataformas que não preservam quebras de linha, use `\n` no lugar das quebras.
 - `GOOGLE_SHEETS_SYNC_INTERVAL_MS`: intervalo em milissegundos (padrão 30000).
 
 A integração só é ativada quando as três primeiras variáveis estão configuradas. Nunca versione a chave JSON, a chave privada ou um arquivo `.env`.
