@@ -1,5 +1,6 @@
 import cors from 'cors';
 import express from 'express';
+import path from 'node:path';
 import helmet from 'helmet';
 import { ConflitoError } from './erros.js';
 import { rotasAdmin } from './routes/admin.js';
@@ -37,6 +38,16 @@ export function criarApp(repo, config) {
   app.use('/api', comCaptura(rotasPublicas(repo, config)));
   app.use('/api', comCaptura(rotasAdmin(repo, config)));
   app.use('/api', comCaptura(rotasCliente(repo, config)));
+
+  // Em deploy de demonstração, frontend e API compartilham o mesmo domínio.
+  const frontendDist = path.resolve(process.cwd(), '../frontend/dist');
+  app.use(express.static(frontendDist));
+  app.get('*', (_req, res, next) => {
+    if (_req.path.startsWith('/api/')) return next();
+    res.sendFile(path.join(frontendDist, 'index.html'), (erro) => {
+      if (erro) next();
+    });
+  });
 
   app.use('/api', (_req, res) => res.status(404).json({ erro: 'Rota não encontrada.' }));
   // eslint-disable-next-line no-unused-vars
