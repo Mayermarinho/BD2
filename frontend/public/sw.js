@@ -42,3 +42,38 @@ self.addEventListener('fetch', (e) => {
     }),
   );
 });
+
+
+// Web Push: a API envia o payload após confirmar o agendamento no banco.
+self.addEventListener('push', (event) => {
+  let dados = {};
+  try { dados = event.data ? event.data.json() : {}; }
+  catch { dados = { body: event.data?.text() || 'Há uma atualização na sua agenda.' }; }
+
+  const titulo = dados.title || 'Novo agendamento';
+  const opcoes = {
+    body: dados.body || 'Um cliente acabou de solicitar um horário.',
+    icon: '/icons/icon-192.png',
+    badge: '/icons/icon-192.png',
+    tag: dados.tag || 'agendamento-novo',
+    renotify: true,
+    data: { url: dados.url || '/admin/agenda' },
+  };
+  event.waitUntil(self.registration.showNotification(titulo, opcoes));
+});
+
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  const destino = new URL(event.notification.data?.url || '/admin/agenda', self.location.origin).href;
+  event.waitUntil((async () => {
+    const clientes = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+    for (const cliente of clientes) {
+      if (cliente.url.startsWith(self.location.origin) && 'focus' in cliente) {
+        await cliente.focus();
+        if ('navigate' in cliente) await cliente.navigate(destino);
+        return;
+      }
+    }
+    if (self.clients.openWindow) await self.clients.openWindow(destino);
+  })());
+});
